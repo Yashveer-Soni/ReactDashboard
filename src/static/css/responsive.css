@@ -1,0 +1,57 @@
+@media screen and (max-width: 1438px) {
+    .sidebar ul li a h4{
+        display: none;
+    }
+    .sidebar ul li button h4{
+        display: none;
+    }
+    .sidebar ul li button{
+        border-radius: 18px;
+        padding: 9px;
+    }
+    
+    .cards, .chartssection,.stocktables,.overallinventory,.overallproducts,.productinfocontainer{
+        margin-left: 5rem;
+        transition: margin 0.5s ease-in-out;
+    }
+    ul{
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .menubar{
+        height: 19rem;
+    }
+    .sidebar{
+        width: 57px;
+        transition: width 0.5s ease-in-out;
+
+    }
+    .slbutton{
+        height: 4rem;
+    }
+    .maincontent{
+        padding-left: 5rem;
+        transition: padding-left 0.5s ease-in-out;
+    }
+  }
+  @media screen and (max-width:1731px) {
+    .overallinventory{
+        max-width: 57%;
+        transition: max-width 0.5s ease-in-out;
+    }
+  }
+  @media screen and (max-width:1275px) {
+    .overallinventory{
+        max-width: 74%;
+        transition: max-width 0.5s ease-in-out;
+    }
+  }
+  @media screen and (max-width:983px) {
+    .overallinventory{
+        max-width: 96%;
+        transition: max-width 0.5s ease-in-out;
+    }
+  }

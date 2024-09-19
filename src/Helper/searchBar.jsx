@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate,NavLink } from 'react-router-dom'; // Import Link and useNavigate for routing
+import { Link, useNavigate, NavLink } from 'react-router-dom'; // Import Link and useNavigate for routing
 
 const SearchBar = ({ onSearch, placeholder }) => {
     const [query, setQuery] = useState(''); 
@@ -75,6 +75,13 @@ const SearchBar = ({ onSearch, placeholder }) => {
         navigate(`/search-results?query=${query}`); // Redirect to the search results page
     };
 
+    // Handle "Enter" key press
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSeeAllClick(); // Trigger the "See All" functionality
+        }
+    };
+
     return (
         <div className="search-bar">
             <div className="searchbar">
@@ -88,6 +95,7 @@ const SearchBar = ({ onSearch, placeholder }) => {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
+                    onKeyDown={handleKeyDown} // Add onKeyDown event handler
                     placeholder={placeholder || "Search..."}
                 />
             </div>

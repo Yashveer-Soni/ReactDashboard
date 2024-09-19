@@ -157,8 +157,8 @@ const ShowInventoryProductsList = ({ openModel }) => {
                             <tr key={index} style={{ cursor: 'pointer' }}>
                                 <td>
                                     <NavLink to={`/Inventory/product/${product.item.id}`} style={{ textDecoration: 'none', color: 'blue' }}>
-                                        {/* {index + 1} */}
-                                        {product.id}
+                                        {index + 1}
+                                        {/* {product.id} */}
                                     </NavLink>
                                 </td>
                                 <td>

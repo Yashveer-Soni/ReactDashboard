@@ -51,18 +51,38 @@ body{
 }
 .SearchResults{
     padding-left: 17rem;
+    padding-right: 1rem;
 }
 .SearchResults .searchbar{
-    width: max-content;
+    width: 100%;
+    max-width: 25rem;
 }
+.SearchResults .suggestions-list{
+    display: none;
+}
+.no-results{
+    text-align: center;
+    font-weight: 500;
 
+}
 .ItemCard img{
-    object-fit: contain;
+    object-fit: cover;
+    height: 250px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.card-contents{
+   padding: 10px;
+}
+.card-contents h3{
+    margin-top: 0;
+    font-size: 22px;
 }
 .slidecard{
+    text-decoration: none;
     border: 1px solid #d7d7d7;
     border-radius: 10px;
-    padding: 10px;
+    color: black;
 }
 .homebanner{
     background-size: cover;
@@ -93,6 +113,13 @@ body{
 .flex2{
     display: flex;
     align-items: center;
+}
+.notification-container{
+    grid-area: notification;
+    justify-content: flex-end;
+}
+.search-bar{
+    grid-area: searchbar ;
 }
 .flex3{
     display: flex;
@@ -190,10 +217,16 @@ body{
 .sidebar{
     background-color: white;
     width: 16rem;
+    display: grid;
     position: fixed;
-    height: 100%;
+    grid-template-rows: 1fr 4fr 1fr;
+    height: 100vh;
     transition: width 0.5s ease-in-out;
 
+}
+.SearchResults .search-bar{
+    display: flex;
+    justify-content: center;
 }
 .maincontent{
     width: 100%;
@@ -202,10 +235,11 @@ body{
 
 }
 .nav{
-    display: flex;
-    justify-content: space-between;
+    display: grid;
     align-items: center;
+    grid-template-areas: "searchbar notification";
     padding: 16px;
+    grid-template-columns: 0.5fr 1fr;
     background-color: white;
 }
 .searchinput{
@@ -217,7 +251,7 @@ body{
     font-size: 15px;
     padding-right: 10px;
     border-color: transparent;
-    width: 24rem;
+    width: 100%;
 }
 .searchbar{
     display: flex;

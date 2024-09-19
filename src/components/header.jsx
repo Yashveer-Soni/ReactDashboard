@@ -14,6 +14,9 @@ const Header = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
     const [isStaff, setIsStaff] = useState(false);
     const [isSuperuser, setIsSuperuser] = useState(false);
+    const queryParams = new URLSearchParams(location.search);
+    const query = queryParams.has('query');
+    const isSearchResultsPage = location.pathname === '/search-results' && query;
 
 
     useEffect(() => {
@@ -57,7 +60,7 @@ const Header = () => {
            
             <div className="container">
                 {isSuperuser&&(
-                <div className="sidebar flex">
+                <div className="sidebar ">
                     <div className="logo">
                         <ul style={{ padding: 0 }}>
                             <NavLink to="/" className="flex4">
@@ -97,7 +100,7 @@ const Header = () => {
                             </NavLink>
                         </li>
                     </ul>
-                    <ul className="slbutton" style={{ marginTop: '20rem' }}>
+                    <ul className="slbutton" >
                         <li>
                             <NavLink to="/Setting/" className={({ isActive }) => (isActive ? "active" : "")}>
                                 <FontAwesomeIcon icon={faGear} />
@@ -133,7 +136,8 @@ const Header = () => {
                             </NavLink>
                         </div>
                         )}
-                        <SearchBar/>
+
+                        {!isSearchResultsPage && <SearchBar />}
 
                         {!isSuperuser&&(
                             <>
@@ -150,7 +154,7 @@ const Header = () => {
                         )}
 
                         {isSuperuser&&(
-                        <div className="flex2">
+                        <div className="flex2 notification-container">
                             <div className="notification">
                                 <FontAwesomeIcon icon={faBell} />
                             </div>

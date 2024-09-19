@@ -14,6 +14,15 @@ export default function CustomSeparator() {
   const breadcrumbs = pathnames.map((value, index) => {
     const last = index === pathnames.length - 1;
     const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+    
+    // Check if the value is "Product" and conditionally render it as plain text
+    if (value === 'product') {
+      return (
+        <Typography key={to} color="text.primary">
+          {value}
+        </Typography>
+      );
+    }
 
     return last ? (
       <Typography key={to} color="text.primary">

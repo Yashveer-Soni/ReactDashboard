@@ -15,6 +15,7 @@ import Signin from './components/Signin';
 import Error from './snippets/Error';
 import Categories from './components/Inventory/CategoriesList';
 import UserHome from './user/UserHome';
+import SearchResults from './components/SearchResults';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const isAuthenticated = !!localStorage.getItem('access_token');
@@ -105,6 +106,8 @@ function App() {
                 {renderRoute(ProductInfo, '/Inventory/product/:id', ['admin'])}
                 {renderRoute(Suppliers, '/Suppliers', ['admin'])}
                 {renderRoute(Categories, '/Inventory/Categories', ['admin'])}
+                {renderRoute(SearchResults, '/search-results', ['admin'])}
+
               </>
             )}
             {isStaff && renderRoute(UserHome, '/', ['user'])}

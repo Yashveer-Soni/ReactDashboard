@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
+// Fetch products for the grid (paginated)
 const FetchProducts = (page = 1) => {
-    const [products, setProducts] = useState([]);  // Ensure this is initialized as an empty array
+    const [products, setProducts] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(page);
     const [totalPages, setTotalPages] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 20;
     const token = localStorage.getItem('access_token');
 
     const fetchProducts = async () => {
@@ -39,4 +40,39 @@ const FetchProducts = (page = 1) => {
     return { products: memoizedProducts, loading, error, fetchProducts, currentPage, setCurrentPage, totalPages };
 };
 
-export default FetchProducts;
+// Fetch products for the Swiper slider (no pagination)
+const FetchSliderProducts = () => {
+    const [sliderProducts, setSliderProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const token = localStorage.getItem('access_token');
+
+    const fetchSliderProducts = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/inventory/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                params: {
+                    page: 1,
+                    page_size: 10
+                }
+            });
+            setSliderProducts(response.data.results || []); // Ensure results is an array
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchSliderProducts();
+    }, []);  // Fetch products once when component mounts
+
+    const memoizedSliderProducts = useMemo(() => sliderProducts, [sliderProducts]);
+
+    return { sliderProducts: memoizedSliderProducts, loading, error };
+};
+
+export { FetchProducts, FetchSliderProducts };

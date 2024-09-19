@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse, faBox, faChartSimple, faUser, faBagShopping, faGear, faRightFromBracket, faMagnifyingGlass, faBell } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from './LoadingSpinner';
 import CustomSeparator from "../snippets/CustomSeparator";
+import SearchBar from "../Helper/searchBar";
 
 const Header = () => {
     const location = useLocation();
@@ -132,12 +133,7 @@ const Header = () => {
                             </NavLink>
                         </div>
                         )}
-                        <div className="searchbar">
-                            <div className="searchsvg">
-                                <FontAwesomeIcon icon={faMagnifyingGlass} />
-                            </div>
-                            <input type="search" className="searchinput" placeholder="Search product, supplier, order" />
-                        </div>
+                        <SearchBar/>
 
                         {!isSuperuser&&(
                             <>

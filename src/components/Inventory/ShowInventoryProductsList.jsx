@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { filter_icon } from "../../snippets/Image_load";
 import { useLocation, NavLink, useNavigate } from 'react-router-dom';
-import FetchProducts from "../../api/FetchProducts";
+import {FetchProducts} from "../../api/FetchProducts";
 import useHandleDeleteProduct from "../../api/HandleDeleteProduct";
 import Paginate from "../../snippets/Paginate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

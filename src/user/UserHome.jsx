@@ -5,10 +5,9 @@ import { homebanner } from '../snippets/Image_load'
 const username=()=> {
   return (
     <>
-    <section className='center homepageBanner'>
+    <div className='center homepageBanner'>
       <div className='homebanner page-width' style={{backgroundImage: `url(${homebanner})`}}></div>
-    </section>
-      <ItemsCard />
+    </div>
       <ItemsCard />
     </>
   )

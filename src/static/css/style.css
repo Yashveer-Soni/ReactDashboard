@@ -12,16 +12,50 @@ body{
 .page-width{
     width: 100%;
     max-width: 1300px;
-    padding: 0 5rem;
+    padding: 0 1.5rem;
 }
 .center{
     display: flex;
     justify-content: center;
 
 }
+.card-grid-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+}
 .ItemCard{
     padding-top: 40px;
 }
+.suggestions-list{
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    margin: 0;
+    padding: 15px 15px;
+    position: absolute;
+    width: 100%;
+    max-width: 24rem;
+    gap: 10px!important;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    cursor: pointer;
+    align-items: flex-start;
+}
+.suggestions-list li a{
+    font-weight: 500;
+    font-size: 16px;
+    color: black!important;
+}
+.suggestions-list li a:hover{
+    text-decoration: underline;
+}
+.SearchResults{
+    padding-left: 17rem;
+}
+.SearchResults .searchbar{
+    width: max-content;
+}
+
 .ItemCard img{
     object-fit: contain;
 }

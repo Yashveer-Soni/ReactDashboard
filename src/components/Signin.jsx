@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingSpinner from './LoadingSpinner';
+import Cookies from 'js-cookie';
 
 const Signin = () => {
     const [username, setUsername] = useState('');
@@ -22,14 +23,34 @@ const Signin = () => {
             navigate('/'); // If already logged in, navigate to the home page
         }
     }, [navigate]);
+    // Fetch CSRF token from the backend
+    useEffect(() => {
+        const fetchCsrfToken = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/api/csrf/');
+                Cookies.set('csrftoken', response.data.csrfToken); // Store CSRF token in cookies
+            } catch (error) {
+                console.error('Failed to fetch CSRF token:', error);
+            }
+        };
+        fetchCsrfToken();
+    }, []);
 
     const handleSignIn = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
+            const csrfToken = Cookies.get('csrftoken'); 
+            console.log(csrfToken);
             const response = await axios.post('http://localhost:8000/api/token/', {
                 username,
                 password
+            },
+            {
+                headers: {
+                    'X-CSRFToken': csrfToken // Send the CSRF token in the headers
+                },
+                withCredentials: true
             });
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);

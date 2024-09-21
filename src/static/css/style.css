@@ -164,7 +164,8 @@ body{
 
 .brand-action{
     display: flex;
-    width: 64%;
+    width: 100%;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
 }
@@ -471,18 +472,18 @@ tr{
 .modelinventory, .modelsupplier , .modelorder{
     display: flex;
     transition: opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
-    background: #e6e8eb7a;
     top: 0;
-    height: 100vh;
-    position: absolute;
+    height: 100%;
+    background-color: white;
+    position: fixed;
     overflow-x: hidden;
     left: 0;
     z-index: 2;
     width: 100%;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
-.modelinventory::after{
+/* .modelinventory::after{
     content: "";
     width: 100%;
     height: 99vh;
@@ -499,14 +500,19 @@ tr{
     -webkit-backdrop-filter: blur(4.9px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     z-index: -1;
-}
+} */
 .modelcontainer{
     width: 100%;
-    max-width: 76rem;
     background: white;
     padding: 17px 17px;
+    height: -webkit-fill-available;
     border-radius: 5px;
 
+}
+.right-form-child{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 50px;
 }
 .dragimage{
     display: flex;
@@ -526,11 +532,64 @@ tr{
 }
 .productname{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    flex-direction: column;
+}
+.productname h4{
+    margin-bottom: 10px;
 }
 .productname input::placeholder, .myDatePicker input::placeholder{
     color: black!important;
+}
+
+.ql-toolbar.ql-snow{
+    font-family: "Roboto", sans-serif!important;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.price-container{
+    flex-direction: row!important;
+    justify-content: space-between!important;
+    gap: 20px;
+
+}
+.css-hwkq3c-MuiInputBase-root-MuiFilledInput-root{
+    background-color: white!important;
+}
+.css-hwkq3c-MuiInputBase-root-MuiFilledInput-root:hover, .css-1dffvzu-MuiInputBase-root-MuiFilledInput-root:hover, .css-reij49-MuiInputBase-root-MuiFilledInput-root:hover, .css-1dffvzu-MuiInputBase-root-MuiFilledInput-root{
+    background-color: white!important;
+}
+.css-1x6bjyf-MuiAutocomplete-root .MuiFilledInput-root{
+    padding: 0px!important;
+}
+.css-kqlxxo-MuiAutocomplete-root .MuiOutlinedInput-root .MuiAutocomplete-input, .css-ecgzp0-MuiAutocomplete-root .MuiOutlinedInput-root .MuiAutocomplete-input{
+    height: 22px!important;
+}
+.MuiAutocomplete-hasPopupIcon.css-kqlxxo-MuiAutocomplete-root .MuiOutlinedInput-root, .MuiAutocomplete-hasPopupIcon.css-ecgzp0-MuiAutocomplete-root .MuiOutlinedInput-root{
+    padding-top: 0!important;
+    padding-left: 0!important;
+    padding-bottom: 0!important;
+}
+
+.css-1x6bjyf-MuiAutocomplete-root .MuiFilledInput-root .MuiFilledInput-input{
+    padding: 0px 10px!important;
+    height: 35px!important;
+}
+.css-hwkq3c-MuiInputBase-root-MuiFilledInput-root::before, .css-hwkq3c-MuiInputBase-root-MuiFilledInput-root::after, .css-1dffvzu-MuiInputBase-root-MuiFilledInput-root::before, .css-1dffvzu-MuiInputBase-root-MuiFilledInput-root::after, .css-reij49-MuiInputBase-root-MuiFilledInput-root::before, .css-reij49-MuiInputBase-root-MuiFilledInput-root::after{
+    content: none!important;
+}
+.css-cqw1hc-MuiStack-root{
+    width: 100%!important;
+}
+.price-container div
+{
+    width: 100%;
+}
+.ql-container.ql-snow{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    height: 10rem;
 }
 .productname input{
     outline: none;
@@ -540,15 +599,15 @@ tr{
     padding-left: 9px;
     font-weight: 400;
     padding-right: 9px;
-    width: 60%;
+    width: -webkit-fill-available;
     border-radius: 5px;
     font-size: 15px;
     font-family: 'Roboto';
 }
 .entries{
-    margin-top: 20px;
     display: grid;
-    grid-template-columns: 1fr 0.8fr;
+    height: 100%;
+    grid-template-columns: 0.3fr 0.8fr;
     gap: 50px;
 }
 .overview{
@@ -700,7 +759,7 @@ tr{
 }
 
   .productname .css-1869usk-MuiFormControl-root{
-    width: 64%;
+    width:100%;
     margin: 0;
   }
   .productname .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
@@ -737,12 +796,12 @@ tr{
   }
   .myDatePicker input{
     height: 4px!important;
-    width: 80%!important;
+    width: 100%!important;
   }
  
   .myDatePicker{
     width: 100%;
-    max-width:20.6rem;
+    max-width:100%;
   }
   .options-overflow{
     height:16rem;

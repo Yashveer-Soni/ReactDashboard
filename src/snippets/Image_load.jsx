@@ -20,8 +20,13 @@ import pen from '../static/icons/pen.svg';
 import received_icon from '../static/icons/location.svg'; 
 import filter_icon from '../static/icons/filtericon.svg'; 
 import homebanner from '../static/banner/homebanner.webp';
+import activeIcon from '../static/icons/active-icon.png';
+import draftIcon from '../static/icons/draft-icon.png';
+
 
 export {
+  activeIcon,
+  draftIcon,
   logo,
   home_icon,
   inventory_icon,

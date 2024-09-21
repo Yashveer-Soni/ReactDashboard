@@ -12,6 +12,12 @@ import { faPlus, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icon
 import AddBrand from '../components/Inventory/Brand/AddBrand';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
+import TextEditor from "../utils/TextEditor";
+import AddTags from "./AddTags";
+import SelectCollection from "./SelectCollection"
+import SelectProductStatus from "./SelectProductStatus";
+
+
 
 
 const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
@@ -138,9 +144,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
         <LinearProgress variant="determinate" value={progress} />
         </Box>
         )}
-          <div className="headline">
-            <h4>Add New Product</h4>
-          </div>
+         
           <form id="myForm" className="entries" onSubmit={handleSubmit}>
             <div className="left-form-child"> 
               <div className="dragimage">
@@ -148,6 +152,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
               </div>
             </div>
             <div className="right-form-child">
+              <div className="sub-child">
                 <div className="productname">
                   <h4>Product Name</h4>
                   <input
@@ -158,6 +163,10 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     value={productName}
                     onChange={(e) => setProductName(e.target.value)}
                   />
+                </div>
+                <div className="productname">
+                <h4>Product Description</h4>
+                < TextEditor />
                 </div>
                 <div className="productname">
                   <h4>Product ID</h4>
@@ -187,7 +196,14 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     <FontAwesomeIcon icon={faTrash} style={{ cursor: 'pointer' }} />
                   </div>
                 </div>
+                </div>
+                <div className="sub-child2">
                 <div className="productname">
+                  <h4>Status</h4>
+                  <SelectProductStatus />
+                </div>
+                <div className="productname price-container">
+                  <div>
                   <h4>MRP</h4>
                   <input
                     className="err"
@@ -198,8 +214,8 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     value={MRP}
                     onChange={(e) => setMRP(e.target.value)}
                   />
-                </div>
-                <div className="productname">
+                  </div>
+                  <div>
                   <h4>Purchase Rate</h4>
                   <input
                     className="err"
@@ -210,7 +226,9 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     value={purchaseRate}
                     onChange={(e) => setpurchaseRate(e.target.value)}
                   />
+                  </div>
                 </div>
+              
                 <div className="productname">
                   <h4>Weight</h4>
                   <input
@@ -235,6 +253,14 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     onChange={(e) => setQuantity(e.target.value)}
                   />
                 </div>
+                <div className="productname">
+                  <h4>Tags</h4>
+                  <AddTags />
+                </div>
+                <div className="productname">
+                  <h4>Collections</h4>
+                  <SelectCollection />
+                </div>
                 
                 <div className="productname">
                   <h4>Packaging Date</h4>
@@ -251,6 +277,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     value={expiryDate}
                     onChange={(newValue) => setExpiryDate(newValue)}
                   />
+                </div>
                 </div>
                 <div
                   className="submitbtn"

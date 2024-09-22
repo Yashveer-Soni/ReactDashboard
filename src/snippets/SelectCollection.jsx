@@ -8,12 +8,20 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function CheckboxesTags() {
+export default function CheckboxesTags({onChangeCollections}) {
+  const [selectedCollections, setSelectedCollections] = React.useState([]);
+  const handleCollectionChange = (event, value) => {
+    const collectionTitles = value.map(collection => collection.title).join(',');
+    setSelectedCollections(value);
+    onChangeCollections(collectionTitles);
+  };
   return (
     <Autocomplete
       multiple
       id="checkboxes-tags-demo"
       options={top100Films}
+      onChange={handleCollectionChange}
+      value={selectedCollections}
       disableCloseOnSelect
       getOptionLabel={(option) => option.title}
       renderOption={(props, option, { selected }) => {

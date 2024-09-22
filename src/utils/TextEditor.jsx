@@ -4,7 +4,7 @@ import 'react-quill/dist/quill.snow.css';
 
 
 
-const TextEditor = () => {
+const TextEditor = ({ onChange }) => {
 
     //state to handle the changes in text editor
     const [content, setContent] = useState('')
@@ -23,6 +23,10 @@ const TextEditor = () => {
             matchVisual: false,
         }
     };
+    const handleChange = (value) => {
+        setContent(value);
+        onChange(value); // Call the onChange prop to pass the value up
+    };
 
     return (
         <div>
@@ -31,7 +35,7 @@ const TextEditor = () => {
                 formats={['header', 'font', 'size', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'list', 'bullet', 'indent', 'link', 'image', 'video']}
                 placeholder=""
                 modules={modules}
-                onChange={setContent}
+                onChange={handleChange}
                 value={content}
             />
 

@@ -27,6 +27,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const [MRP, setMRP] = useState("");
   const [purchaseRate, setpurchaseRate] = useState("");
   const [weight, setWeight] = useState("");
+  const [weightType, setWeightType] = useState("");
   const [quantity, setQuantity] = useState("");
   const [expiryDate, setExpiryDate] = useState(null);
   const [packagingDate, setpackagingDate] = useState(null);
@@ -36,9 +37,16 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
+  const [editorContent, setEditorContent] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState(0);
+  const [costPerItem, setCostPerItem] = useState("");
+  const [profit, setProfit] = useState("");
+  const [margin, setMargin] = useState("");
+  const [tags, setTags] = useState([]);
+  const [collections, setCollections] = useState([]);
   const token=localStorage.getItem('access_token');
-
-
+  console.log("tags"+tags);
+  console.log("collections"+collections);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -59,8 +67,15 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
     setSelectedCategory(category);  // Set the category ID
   };
 
+  const handleEditorChange = (content) => {
+    setEditorContent(content);
+  };
   const handleFilesUpdate = (newFiles) => {
     setFiles(newFiles);
+  };
+
+  const SelectedProductStatus = (status) => {
+    setSelectedStatus(status);
   };
  
 
@@ -71,13 +86,21 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!productName || !productId || !MRP || !quantity  || !selectedCategory || !selectedSubCategory || !selectedBrand ||!fileValidate ||!expiryDate ||!purchaseRate ||!weight ||!packagingDate) {
+    if (!productName || !productId || !MRP || !quantity||!costPerItem || !profit || !margin || !weightType  || !selectedCategory || !selectedSubCategory || !selectedBrand ||!fileValidate ||!expiryDate ||!purchaseRate ||!weight ||!packagingDate ||!editorContent) {
       toast.error("Please fill out all required fields.");
       return;
     }
 
     const formData = new FormData();
     formData.append('item_name', productName);
+    formData.append('item_description', editorContent);
+    formData.append('weightType', weightType);
+    formData.append('cost_per_item', costPerItem);
+    formData.append('profit', profit);
+    formData.append('margin', margin);
+    formData.append('tags', tags);
+    formData.append('collections', collections);
+    formData.append('status', selectedStatus);
     formData.append('bar_code', productId);
     formData.append('mrp', MRP);
     formData.append('weight', weight);
@@ -106,6 +129,14 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
     })
       .then(response => {
         setProductName("");
+        setCollections([]);
+        setCostPerItem("");
+        setWeightType("");
+        setMargin("");
+        setEditorContent("");
+        setProfit("");
+        setTags([]);
+        setSelectedStatus(0);
         setProductId("");
         setMRP("");
         setQuantity("");
@@ -167,7 +198,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                 </div>
                 <div className="productname">
                 <h4>Product Description</h4>
-                < TextEditor />
+                < TextEditor onChange={handleEditorChange} />
                 </div>
                 <div className="productname">
                   <h4>Product ID</h4>
@@ -201,7 +232,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                 <div className="sub-child2">
                 <div className="productname">
                   <h4>Status</h4>
-                  <SelectProductStatus />
+                  <SelectProductStatus onSelectStatus={SelectedProductStatus} />
                 </div>
                 <div className="productname price-container">
                   <div className="fa-rupee-icon">
@@ -241,8 +272,8 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     type="text"
                     id="pPrice"
                     placeholder=""
-                    value={MRP}
-                    onChange={(e) => setMRP(e.target.value)}
+                    value={costPerItem}
+                    onChange={(e) => setCostPerItem(e.target.value)}
                   />
                   </div>
                   <div className="fa-rupee-icon">
@@ -254,8 +285,8 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     type="text"
                     id="pPrice"
                     placeholder=""
-                    value={purchaseRate}
-                    onChange={(e) => setpurchaseRate(e.target.value)}
+                    value={profit}
+                    onChange={(e) => setProfit(e.target.value)}
                   />
                   </div>
                   <div>
@@ -266,8 +297,8 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     type="text"
                     id="pPrice"
                     placeholder=""
-                    value={purchaseRate}
-                    onChange={(e) => setpurchaseRate(e.target.value)}
+                    value={margin}
+                    onChange={(e) => setMargin(e.target.value)}
                   />
                   </div>
                 </div>
@@ -285,7 +316,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
                       />
-                      <WeightType />
+                      <WeightType onWeightChange={(weightType) => setWeightType(weightType)} />
                     </div>
                   </div>
                   <div>
@@ -306,11 +337,11 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                 </div>
                 <div className="productname">
                   <h4>Tags</h4>
-                  <AddTags />
+                  <AddTags onChangeTags={(tags) => setTags(tags)} />
                 </div>
                 <div className="productname">
                   <h4>Collections</h4>
-                  <SelectCollection />
+                  <SelectCollection onChangeCollections={(collections) => setCollections(collections)} />
                 </div>
                 
                 <div className="productname">

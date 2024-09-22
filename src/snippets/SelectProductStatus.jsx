@@ -4,10 +4,16 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { draftIcon, activeIcon } from './Image_load';
 
-export default function SelectProductStatus() {
+export default function SelectProductStatus({ onSelectStatus }) {
+  // Define the options with icons
+  const icons = [
+    { icon: activeIcon, label: 'Active' },
+    { icon: draftIcon, label: 'Draft' },
+  ];
+
   return (
     <Autocomplete
-      id="country-select-demo"
+      id="status-select-demo"
       sx={{
         width: '100%',
         '& .MuiOutlinedInput-root': {
@@ -24,6 +30,7 @@ export default function SelectProductStatus() {
       options={icons}
       autoHighlight
       getOptionLabel={(option) => option.label}
+      onChange={(event, value) => onSelectStatus(value)} // Handle change
       renderOption={(props, option) => {
         const { key, ...optionProps } = props;
         return (
@@ -40,7 +47,7 @@ export default function SelectProductStatus() {
               src={`${option.icon}`}
               alt=""
             />
-            {option.label} 
+            {option.label}
           </Box>
         );
       }}
@@ -59,8 +66,3 @@ export default function SelectProductStatus() {
     />
   );
 }
-
-const icons = [
-  { icon: activeIcon, label: 'Active'},
-  { icon: draftIcon, label: 'Draft'},
-];

@@ -16,6 +16,7 @@ import Error from './snippets/Error';
 import Categories from './components/Inventory/CategoriesList';
 import UserHome from './user/UserHome';
 import SearchResults from './components/SearchResults';
+import ProductPage from './user/ProductPage';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const isAuthenticated = !!localStorage.getItem('access_token');
@@ -31,7 +32,6 @@ const PrivateRoute = ({ children, allowedRoles }) => {
   console.log('allowed roles include user role:', roleIncluded);
 
   if (allowedRoles && !roleIncluded) {
-    console.log('User role is not allowed to access this page. Redirecting to /error');
     // return <Navigate to="/" replace />;
     window.location.href = '/';
   }
@@ -110,7 +110,15 @@ function App() {
 
               </>
             )}
-            {isStaff && renderRoute(UserHome, '/', ['user'])}
+            {
+            isStaff && 
+            (
+              <>
+               {renderRoute(UserHome, '/', ['user'])}
+               {renderRoute(ProductPage, '/product/:id', ['user'])}
+              </>
+            )
+            }
             <Route path="/signin/" element={<Signin />} />
             <Route path="*" element={<Error />} />
           </Routes>

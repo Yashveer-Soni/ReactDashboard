@@ -4,11 +4,12 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function SelectLabels() {
+export default function SelectLabels({onWeightChange}) {
   const [weight, setWeight] = React.useState(3);
 
   const handleChange = (event) => {
     setWeight(event.target.value);
+    onWeightChange(event.target.value);
   };
 
   return (

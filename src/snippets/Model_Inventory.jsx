@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios"; // Import axios for HTTP requests
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPenToSquare, faTrash, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import AddBrand from '../components/Inventory/Brand/AddBrand';
 import LinearProgress from '@mui/material/LinearProgress';
 import Box from '@mui/material/Box';
@@ -16,6 +16,7 @@ import TextEditor from "../utils/TextEditor";
 import AddTags from "./AddTags";
 import SelectCollection from "./SelectCollection"
 import SelectProductStatus from "./SelectProductStatus";
+import WeightType from "./WeightType";
 
 
 
@@ -203,55 +204,105 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                   <SelectProductStatus />
                 </div>
                 <div className="productname price-container">
-                  <div>
+                  <div className="fa-rupee-icon">
                   <h4>MRP</h4>
+                  <FontAwesomeIcon icon={faIndianRupeeSign} />
                   <input
                     className="err"
                     name="productPrice"
                     type="text"
                     id="pPrice"
-                    placeholder="Enter MRP"
+                    placeholder=""
                     value={MRP}
                     onChange={(e) => setMRP(e.target.value)}
                   />
                   </div>
-                  <div>
+                  <div className="fa-rupee-icon">
                   <h4>Purchase Rate</h4>
+                  <FontAwesomeIcon icon={faIndianRupeeSign} />
                   <input
                     className="err"
                     name="productPrice"
                     type="text"
                     id="pPrice"
-                    placeholder="Enter Purchase Rate"
+                    placeholder=""
+                    value={purchaseRate}
+                    onChange={(e) => setpurchaseRate(e.target.value)}
+                  />
+                  </div>
+                </div>
+                <div className="productname price-container">
+                  <div className="fa-rupee-icon">
+                  <h4>Cost Per Item</h4>
+                  <FontAwesomeIcon icon={faIndianRupeeSign} />
+                  <input
+                    className="err"
+                    name="productPrice"
+                    type="text"
+                    id="pPrice"
+                    placeholder=""
+                    value={MRP}
+                    onChange={(e) => setMRP(e.target.value)}
+                  />
+                  </div>
+                  <div className="fa-rupee-icon">
+                  <h4>Profit</h4>
+                  <FontAwesomeIcon icon={faIndianRupeeSign} />
+                  <input
+                    className="err"
+                    name="productPrice"
+                    type="text"
+                    id="pPrice"
+                    placeholder=""
+                    value={purchaseRate}
+                    onChange={(e) => setpurchaseRate(e.target.value)}
+                  />
+                  </div>
+                  <div>
+                  <h4>Margin</h4>
+                  <input
+                    className="err"
+                    name="productPrice"
+                    type="text"
+                    id="pPrice"
+                    placeholder=""
                     value={purchaseRate}
                     onChange={(e) => setpurchaseRate(e.target.value)}
                   />
                   </div>
                 </div>
               
-                <div className="productname">
-                  <h4>Weight</h4>
-                  <input
-                    className="err"
-                    name="productPrice"
-                    type="text"
-                    id="pPrice"
-                    placeholder="Enter Weight"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                  />
+                <div className="productname price-container">
+                  <div>
+                    <h4>Weight</h4>
+                    <div className="weight-container">
+                      <input
+                        className="err"
+                        name="productPrice"
+                        type="text"
+                        id="pPrice"
+                        placeholder=""
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                      />
+                      <WeightType />
+                    </div>
+                  </div>
+                  <div>
+                    <h4>Quantity</h4>
+                    <input
+                      className="err"
+                      name="productQuantity"
+                      type="text"
+                      id="pQuantity"
+                      placeholder=""
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)}
+                    />
+                  </div>
                 </div>
                 <div className="productname">
-                  <h4>Quantity</h4>
-                  <input
-                    className="err"
-                    name="productQuantity"
-                    type="text"
-                    id="pQuantity"
-                    placeholder="Enter product quantity"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                  />
+                  
                 </div>
                 <div className="productname">
                   <h4>Tags</h4>

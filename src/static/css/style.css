@@ -582,20 +582,46 @@ tr{
 .css-cqw1hc-MuiStack-root{
     width: 100%!important;
 }
+.weight-container{
+    display: grid;
+    grid-template-columns: 2fr 0.5fr;
+    gap: 10px;
+    align-items: center;
+}
+.weight-container .css-1869usk-MuiFormControl-root{
+    min-width: 70px!important;
+}
+.weight-container .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select{
+    border: 1px solid #d0d5dd;
+}
 .price-container div
 {
     width: 100%;
+    position: relative;
+
+}
+.price-container .fa-indian-rupee-sign path{
+    fill: #5D6679;
+}
+.fa-rupee-icon input{
+    padding-left: 25px!important;
+}
+.price-container .fa-indian-rupee-sign{
+    position: absolute;
+    top: 88%;
+    left: 10px;
+    transform: translateY(-100%);
 }
 .ql-container.ql-snow{
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    height: 10rem;
+    height: 150px;
 }
 .productname input{
     outline: none;
     border: 1px solid #D0D5DD;
     color: #000000;
-    height: 35px;
+    height: 40px;
     padding-left: 9px;
     font-weight: 400;
     padding-right: 9px;

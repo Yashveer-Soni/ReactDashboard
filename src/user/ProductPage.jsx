@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { pen } from "../snippets/Image_load";
 import {FetchProducts} from "../api/FetchProducts";
-import FullScreenSlider from '../components/Inventory/FullScreenSlider';
 import ProductImageSlider from './ProductImageSlider';
+import { sanitizeHtml } from '../Helper/sanitizeHtml';
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -50,43 +49,47 @@ const ProductPage = () => {
     const { products, loading, error } = FetchProducts();
     const { id } = useParams();
     const readableItemName = slugToString(id);
-    const product = products.find((product) => product.item.item_name=== readableItemName);
-    
+
+    // Find the product based on the readable item name
+    const product = products.find((product) => product.item.item_name === readableItemName);
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
-    if (!product) return <div>Product not found</div>;
+    // Check if product is found
+    if (!product || !product.item) return <div>Product not found</div>;
 
-    const product_images = product.item.images || []; // Default to empty array if images is undefined
-console.log(product_images);
+    // Safely access and sanitize item_description
+    const description = product.item.item_description || ""; // Default to empty string if not found
+    const item_description = sanitizeHtml(description); // Sanitize only after confirming product exists
+
+    const product_images = product.item.images || []; // Default to empty array if images are undefined
+
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
     return (
-        <div className="productinfocontainer" style={{marginLeft: "0px", paddingLeft:"15px"}}>
-            <div className="floatright" style={{flexDirection:'row',alignItems:'flex-start', width:'100%'}}>
-                <div className="flex4 product-img-slider" style={{height:'100%'}}>
-                    {/* {product_images.length > 0 && <FullScreenSlider images={product_images} />} */}
+        <div className="productinfocontainer" style={{ marginLeft: "0px", paddingLeft: "15px" }}>
+            <div className="floatright" style={{ flexDirection: 'row', alignItems: 'flex-start', width: '100%' }}>
+                <div className="flex4 product-img-slider" style={{ height: '100%' }}>
                     <ProductImageSlider images={product_images} />
                 </div>
                 <div className='product-details'>
-                    <div className="">
-                        <h3>{product.item.item_name}</h3>
-                    </div>
+                    <h3>{product.item.item_name}</h3>
                 </div>
             </div>
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        <Tab label="Overview" {...a11yProps(0)} />
-                        <Tab label="Purchases" {...a11yProps(1)} />
-                        <Tab label="Adjustments" {...a11yProps(2)} />
-                        <Tab label="History" {...a11yProps(3)} />
+                        <Tab label="Description" {...a11yProps(0)} />
+                        <Tab label="Nutritional Information" {...a11yProps(1)} />
+                        <Tab label="Disclaimer" {...a11yProps(2)} />
+                        <Tab label="More Info" {...a11yProps(3)} />
                     </Tabs>
                 </Box>
                 <CustomTabPanel value={value} index={0}>
-                  description
+                    <div className='description' dangerouslySetInnerHTML={{ __html: item_description }} />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
                     Item Two

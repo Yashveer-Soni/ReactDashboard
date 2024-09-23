@@ -27,7 +27,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const [MRP, setMRP] = useState("");
   const [purchaseRate, setpurchaseRate] = useState("");
   const [weight, setWeight] = useState("");
-  const [weightType, setWeightType] = useState("");
+  const [weightType, setWeightType] = useState(0);
   const [quantity, setQuantity] = useState("");
   const [expiryDate, setExpiryDate] = useState(null);
   const [packagingDate, setpackagingDate] = useState(null);
@@ -47,6 +47,28 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const token=localStorage.getItem('access_token');
   console.log("tags"+tags);
   console.log("collections"+collections);
+
+  const handleCostChange = (e) => {
+    const cost = parseFloat(e.target.value) || 0;
+    setCostPerItem(cost);
+
+    const profitValue = parseFloat(MRP) - cost;
+    setProfit(profitValue);
+
+    const marginValue = MRP ? ((profitValue / parseFloat(MRP)) * 100).toFixed(2) : 0;
+    setMargin(marginValue);
+  };
+
+  const handleMrpChange = (e) => {
+    const mrpValue = parseFloat(e.target.value) || 0;
+    setMRP(mrpValue);
+
+    const profitValue = mrpValue - parseFloat(costPerItem);
+    setProfit(profitValue);
+
+    const marginValue = mrpValue ? ((profitValue / mrpValue) * 100).toFixed(2) : 0;
+    setMargin(marginValue);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -85,6 +107,25 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    console.log("productName"+productName);
+    console.log("productId"+productId);
+    console.log("MRP"+MRP);
+    console.log("quantity"+quantity);
+    console.log("costPerItem"+costPerItem);
+    console.log("profit"+profit);
+    console.log("margin"+margin);
+    console.log("weightType"+weightType);
+    console.log("selectedCategory"+selectedCategory);
+    console.log("selectedSubCategory"+selectedSubCategory);
+    console.log("selectedBrand"+selectedBrand);
+    console.log("fileValidate"+fileValidate);
+    console.log("expiryDate"+expiryDate);
+    console.log("purchaseRate"+purchaseRate);
+    console.log("weight"+weight);
+    console.log("packagingDate"+packagingDate);
+    console.log("editorContent"+editorContent);
+
 
     if (!productName || !productId || !MRP || !quantity||!costPerItem || !profit || !margin || !weightType  || !selectedCategory || !selectedSubCategory || !selectedBrand ||!fileValidate ||!expiryDate ||!purchaseRate ||!weight ||!packagingDate ||!editorContent) {
       toast.error("Please fill out all required fields.");
@@ -245,7 +286,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     id="pPrice"
                     placeholder=""
                     value={MRP}
-                    onChange={(e) => setMRP(e.target.value)}
+                    onChange={handleMrpChange}
                   />
                   </div>
                   <div className="fa-rupee-icon">
@@ -273,7 +314,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     id="pPrice"
                     placeholder=""
                     value={costPerItem}
-                    onChange={(e) => setCostPerItem(e.target.value)}
+                    onChange={handleCostChange}
                   />
                   </div>
                   <div className="fa-rupee-icon">
@@ -286,6 +327,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     id="pPrice"
                     placeholder=""
                     value={profit}
+                    readOnly
                     onChange={(e) => setProfit(e.target.value)}
                   />
                   </div>
@@ -298,6 +340,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
                     id="pPrice"
                     placeholder=""
                     value={margin}
+                    readOnly
                     onChange={(e) => setMargin(e.target.value)}
                   />
                   </div>

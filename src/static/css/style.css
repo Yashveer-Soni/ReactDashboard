@@ -971,7 +971,9 @@ tr{
     background-color: #5D6679;
     clip-path: polygon(100% 0%, 0 0%, 50% 100%);
   }
-  
+  .description p{
+    font-weight: 300!important;
+  }
   .custom-alert {
     position: fixed;
     display: none;

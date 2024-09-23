@@ -9,7 +9,7 @@ export default function SelectLabels({onWeightChange}) {
 
   const handleChange = (event) => {
     setWeight(event.target.value);
-    onWeightChange(event.target.value);
+    onWeightChange(weight);
   };
 
   return (

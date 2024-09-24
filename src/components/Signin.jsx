@@ -5,24 +5,28 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { jwtDecode } from "jwt-decode";
+
 import LoadingSpinner from './LoadingSpinner';
 import Cookies from 'js-cookie';
+
 
 const Signin = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [Role, setRole] = useState(false); // State to track if the user is superuser
+    const [role, setRole] = useState(false); // State to track if the user is superuser
 
     const navigate = useNavigate(); // Initialize the useNavigate hook
 
-     // Check if user is already authenticated
-     useEffect(() => {
+    // Check if user is already authenticated
+    useEffect(() => {
         const accessToken = localStorage.getItem('access_token');
         if (accessToken) {
-            navigate('/'); // If already logged in, navigate to the home page
+            window.location.href = '/'; // If already logged in, navigate to the home page
         }
     }, [navigate]);
+
     // Fetch CSRF token from the backend
     useEffect(() => {
         const fetchCsrfToken = async () => {
@@ -41,7 +45,6 @@ const Signin = () => {
         setLoading(true);
         try {
             const csrfToken = Cookies.get('csrftoken'); 
-            console.log(csrfToken);
             const response = await axios.post('http://localhost:8000/api/token/', {
                 username,
                 password
@@ -52,17 +55,25 @@ const Signin = () => {
                 },
                 withCredentials: true
             });
+            
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('role', response.data.role);
-            
+            localStorage.setItem('username', response.data.username);
+
+
+            // Decode JWT to get the expiration time
+            const decodedToken = jwtDecode(response.data.access);
+            const expirationTime = decodedToken.exp * 1000; 
+            localStorage.setItem('token_expiry', expirationTime);
+
             // Update the state based on response
             setRole(response.data.role);
-
+            
             axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
 
             toast.success('Login successful!');
-            navigate('/'); // Navigate to the homepage after successful login
+            window.location.href = '/'; // Navigate to the homepage after successful login
         } catch (error) {
             console.error('Login failed', error);
             toast.error('Login failed. Please check your credentials.');

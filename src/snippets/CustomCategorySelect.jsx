@@ -1,69 +1,48 @@
-// import React, { useState, useEffect } from 'react';
-// import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import CustomSelect from './CustomSelect';
 
-// const ITEM_HEIGHT = 48;
-// const ITEM_PADDING_TOP = 8;
-// const MenuProps = {
-//   PaperProps: {
-//     style: {
-//       maxHeight: ITEM_HEIGHT * 10 + ITEM_PADDING_TOP, // Show only 10 items at a time
-//       width: 250,
-//     },
-//   },
-// };
+const CustomCategorySelect = ({ onSelectCategory, selectedCategoryId }) => {
+  const selected = localStorage.getItem('selectedCategory') || null;
+  const [selectedOption, setSelectedOption] = useState('');
+  const [categories, setCategories] = useState([]);
+  const token = localStorage.getItem('access_token');
 
-// const CustomCategorySelect = ({ onSelectCategory, selectedCategoryId }) => {
-//   const selected=localStorage.getItem("selectedCategory") || null;
-//   const [selectedOption, setSelectedOption] = useState('');
-//   const [categories, setCategories] = useState([]);
-//   const token=localStorage.getItem('access_token');
+  useEffect(() => {
+    axios
+      .get('http://127.0.0.1:8000/api/categories/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => setCategories(response.data))
+      .catch((error) => console.error('Error fetching categories:', error));
+  }, []);
 
+  useEffect(() => {
+    setSelectedOption(selectedCategoryId || '');
+  }, [selectedCategoryId]);
 
-//   useEffect(() => {
-//     // Fetch categories from the API
-//     axios.get("http://127.0.0.1:8000/api/categories/",{
-//       headers: {
-//         'Authorization': `Bearer ${token}`
-//     }
-//     })
-//       .then(response => setCategories(response.data))
-//       .catch(error => console.error("Error fetching categories:", error));
-//   }, []);
+  const handleChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedOption(selectedValue);
+    onSelectCategory(selectedValue);
+  };
 
-//   useEffect(() => {
-//     // Set the selected option when selectedCategoryId changes
-//     setSelectedOption(selectedCategoryId || '');
-//   }, [selectedCategoryId]);
+  return (
+    <CustomSelect
+      label="Select Category"
+      options={categories}
+      selectedOption={selectedOption}
+      onSelect={(value) => {
+        setSelectedOption(value);
+        onSelectCategory(value); 
+      }}
+      valueKey="id"         
+      labelKey="category_name" 
+      placeholder="Choose a category"
+    />
+  );
+};
 
-//   const handleChange = (event) => {
-//     const selectedValue = event.target.value;
-//     setSelectedOption(selectedValue);
-//     onSelectCategory(selectedValue); // Pass the selected value directly to the parent component
-//   };
-
-//   return (
-//     <FormControl sx={{ m: 1, minWidth: 120 }}>
-//       <Select
-//         value={selectedOption?selectedOption:selected}
-//         onChange={handleChange}
-//         displayEmpty
-//         inputProps={{ 'aria-label': 'Without label' }}
-//         MenuProps={MenuProps} // Apply the custom MenuProps here
-//       >
-//         <MenuItem value="">
-//           None
-//         </MenuItem>
-//         {categories.map((category) => (
-//           <MenuItem
-//             key={category.id}
-//             value={category.id} // Use the category ID as the value
-//           >
-//             {category.category_name}
-//           </MenuItem>
-//         ))}
-//       </Select>
-//     </FormControl>
-//   );
-// };
-
-// export default CustomCategorySelect;
+export default CustomCategorySelect;

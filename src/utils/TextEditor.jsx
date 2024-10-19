@@ -30,11 +30,11 @@ const TextEditor = ({ onChange }) => {
 
     const handleChange = (value) => {
         setContent(value);
-        onChange(value); // Call the onChange prop to pass the value up
+        onChange(value); 
 
-        // Save the content to localStorage
         localStorage.setItem("editorContent", value);
     };
+
 
     return (
         <div>
@@ -45,13 +45,8 @@ const TextEditor = ({ onChange }) => {
                 modules={modules}
                 onChange={handleChange}
                 value={content}
+                className='bg-white rounded-[10px] text-black '
             />
-
-            {/* Uncomment the following block if you want to show a preview of the content */}
-            {/* <div>
-                <h2 className="text-xl font-bold flex justify-center mt-8">Preview</h2>
-                <div dangerouslySetInnerHTML={{ __html: content }}></div>
-            </div> */}
         </div>
     );
 };

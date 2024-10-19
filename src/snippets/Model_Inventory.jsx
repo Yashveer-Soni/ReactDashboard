@@ -1,8 +1,8 @@
 import { useState, React, useEffect } from "react";
-// import Category_Select from "./CustomCategorySelect";
-// import SubCategory_Select from "./CustomSubCategorySelect";
-// import Brand_Select from "./CustomBrandsSelect";
-import FileUpload from "./FileUpload";
+import Category_Select from "./CustomCategorySelect";
+import SubCategory_Select from "./CustomSubCategorySelect";
+import Brand_Select from "./CustomBrandsSelect";
+// import FileUpload from "./FileUpload";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios"; // Import axios for HTTP requests
@@ -10,15 +10,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faPenToSquare, faTrash, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
 // import AddBrand from '../components/Inventory/Brand/AddBrand';
 import TextEditor from "../utils/TextEditor";
-// import AddTags from "./AddTags";
+
 // import SelectCollection from "./SelectCollection"
-// import SelectProductStatus from "./SelectProductStatus";
-// import WeightType from "./WeightType";
+import SelectProductStatus from "./SelectProductStatus";
+import WeightType from "./WeightType";
 // import dayjs from 'dayjs';
+import { Icon } from '@iconify/react';
+import TagSelect from "./TagSelect";
+import DatePickerComponent from "./DatePicker";
 
 
-
-const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
+const Model_Inventory = ({ isOpen, onClose, onProductAdded }) => {
   const [productName, setProductName] = useState(localStorage.getItem("productName") || "");
   const [productId, setProductId] = useState(localStorage.getItem("productId") || "");
   const [MRP, setMRP] = useState(localStorage.getItem("MRP") || "");
@@ -28,11 +30,11 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const [quantity, setQuantity] = useState(localStorage.getItem("quantity") || "");
   // const [expiryDate, setExpiryDate] = useState(localStorage.getItem("expiryDate") ? dayjs(localStorage.getItem("expiryDate")) : null);
   // const [packagingDate, setpackagingDate] = useState(localStorage.getItem("packagingDate") ? dayjs(localStorage.getItem("packagingDate")) : null);
-    const [expiryDate, setExpiryDate] = useState(localStorage.getItem("expiryDate"));
-  const [packagingDate, setpackagingDate] = useState(localStorage.getItem("packagingDate") );
-  const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem("selectedCategory") || null); 
-  const [selectedSubCategory, setSubSelectedCategory] = useState(localStorage.getItem("selectedSubCategory") || null); 
-  const [selectedBrand, setSelectedBrand] = useState(localStorage.getItem("selectedBrand") || null); 
+  const [expiryDate, setExpiryDate] = useState(localStorage.getItem("expiryDate"));
+  const [packagingDate, setpackagingDate] = useState(localStorage.getItem("packagingDate"));
+  const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem("selectedCategory") || null);
+  const [selectedSubCategory, setSubSelectedCategory] = useState(localStorage.getItem("selectedSubCategory") || null);
+  const [selectedBrand, setSelectedBrand] = useState(localStorage.getItem("selectedBrand") || null);
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
@@ -44,11 +46,11 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const [tags, setTags] = useState(JSON.parse(localStorage.getItem("tags")) || []);
   const [collections, setCollections] = useState(JSON.parse(localStorage.getItem("collections")) || []);
   const [files, setFiles] = useState(JSON.parse(localStorage.getItem("files")) || []);
-  const [sellingrate, setsellingRate]=useState(localStorage.getItem("sellingrate") || '');
+  const [sellingrate, setsellingRate] = useState(localStorage.getItem("sellingrate") || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const token=localStorage.getItem('access_token');
+  const token = localStorage.getItem('access_token');
 
   const handleCostChange = (e) => {
     const cost = parseFloat(e.target.value) || 0;
@@ -80,11 +82,11 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
     setOpen(false);
   };
 
-  var fileValidate=false;
-  if (files.length===0){
-    fileValidate=false;
-  }else{
-    fileValidate=true;
+  var fileValidate = false;
+  if (files.length === 0) {
+    fileValidate = false;
+  } else {
+    fileValidate = true;
   }
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);  // Set the category ID
@@ -100,7 +102,7 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
   const SelectedProductStatus = (status) => {
     setSelectedStatus(status);
   };
- 
+
 
   const handleSubCategorySelect = (subCategory) => {
     setSubSelectedCategory(subCategory)
@@ -124,20 +126,20 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
     localStorage.setItem("costPerItem", costPerItem);
     localStorage.setItem("profit", profit);
     localStorage.setItem("margin", margin);
-    localStorage.setItem("sellingrate",sellingrate);
+    localStorage.setItem("sellingrate", sellingrate);
     sellingrate > 0
-    ?localStorage.setItem("sellingrate",sellingrate)
-    :localStorage.removeItem("sellingrate");
+      ? localStorage.setItem("sellingrate", sellingrate)
+      : localStorage.removeItem("sellingrate");
 
-    tags.length > 0 
-    ? localStorage.setItem("tags", JSON.stringify(tags)) 
-    : localStorage.removeItem("tags");
-    collections.length > 0 
-    ? localStorage.setItem("collections", JSON.stringify(collections)) 
-    : localStorage.removeItem("collections");
+    tags.length > 0
+      ? localStorage.setItem("tags", JSON.stringify(tags))
+      : localStorage.removeItem("tags");
+    collections.length > 0
+      ? localStorage.setItem("collections", JSON.stringify(collections))
+      : localStorage.removeItem("collections");
 
 
-  }, [productName, productId, MRP,sellingrate, purchaseRate, weight, quantity, expiryDate, packagingDate, selectedCategory, selectedSubCategory, selectedBrand, files, editorContent, selectedStatus, costPerItem, profit, margin, tags, collections]);
+  }, [productName, productId, MRP, sellingrate, purchaseRate, weight, quantity, expiryDate, packagingDate, selectedCategory, selectedSubCategory, selectedBrand, files, editorContent, selectedStatus, costPerItem, profit, margin, tags, collections]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -146,13 +148,13 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
     setIsSubmitting(true);
 
     // Check for missing fields
-    if (!productName || !productId || !MRP || !quantity || !costPerItem || !profit || !margin || !weightType || 
-        !selectedCategory || !selectedSubCategory || !selectedBrand || !fileValidate || !expiryDate || 
-        !purchaseRate || !weight || !packagingDate || !editorContent) {
-        toast.error("Please fill out all required fields.");
-        setIsAdding(false);
-        setIsSubmitting(false);
-        return;
+    if (!productName || !productId || !MRP || !quantity || !costPerItem || !profit || !margin || !weightType ||
+      !selectedCategory || !selectedSubCategory || !selectedBrand || !fileValidate || !expiryDate ||
+      !purchaseRate || !weight || !packagingDate || !editorContent) {
+      toast.error("Please fill out all required fields.");
+      setIsAdding(false);
+      setIsSubmitting(false);
+      return;
     }
 
     const formData = new FormData();
@@ -179,58 +181,58 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded  }) => {
 
     // Append images to formData
     files.forEach((file) => {
-        formData.append('images', file);  // 'images' is the key in the Django view
+      formData.append('images', file);  // 'images' is the key in the Django view
     });
 
     try {
-        const response = await axios.post('http://127.0.0.1:8000/api/products/', formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data',
-            },
-            onUploadProgress: (progressEvent) => {
-                setProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
-            }
-        });
-
-        // Clear local storage
-        // clearLocalStorage();
-        
-        // Reset fields after successful submission
-        // resetFields();
-        
-        toast.success("Product added successfully");
-        onClose(); // Close the modal after successful submission
-        if (onProductAdded) {
-            onProductAdded();
+      const response = await axios.post('http://127.0.0.1:8000/api/products/', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (progressEvent) => {
+          setProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
         }
-    } catch (error) {
-        const errorMessage = error.response && error.response.data && error.response.data.error 
-            ? error.response.data.error 
-            : "Error adding product";
-        toast.error(errorMessage);
-        console.error("Error adding product:", error);
-        setIsError(true);
-    } finally {
-        setIsAdding(false);
-        setIsSubmitting(false); // Reset submitting state
-    }
-};
+      });
 
-// Function to clear local storage
-const clearLocalStorage = () => {
+      // Clear local storage
+      // clearLocalStorage();
+
+      // Reset fields after successful submission
+      // resetFields();
+
+      toast.success("Product added successfully");
+      onClose(); // Close the modal after successful submission
+      if (onProductAdded) {
+        onProductAdded();
+      }
+    } catch (error) {
+      const errorMessage = error.response && error.response.data && error.response.data.error
+        ? error.response.data.error
+        : "Error adding product";
+      toast.error(errorMessage);
+      console.error("Error adding product:", error);
+      setIsError(true);
+    } finally {
+      setIsAdding(false);
+      setIsSubmitting(false); // Reset submitting state
+    }
+  };
+
+  // Function to clear local storage
+  const clearLocalStorage = () => {
     const keysToRemove = [
-        "productName", "productId", "MRP", "purchaseRate", 
-        "weight", "weightType", "quantity", "expiryDate", 
-        "packagingDate", "selectedCategory", "selectedSubCategory", 
-        "selectedBrand", "files", "editorContent", "selectedStatus", 
-        "costPerItem", "profit", "margin", "tags", "collections"
+      "productName", "productId", "MRP", "purchaseRate",
+      "weight", "weightType", "quantity", "expiryDate",
+      "packagingDate", "selectedCategory", "selectedSubCategory",
+      "selectedBrand", "files", "editorContent", "selectedStatus",
+      "costPerItem", "profit", "margin", "tags", "collections"
     ];
     keysToRemove.forEach(key => localStorage.removeItem(key));
-};
+  };
 
-// Function to reset fields
-const resetFields = () => {
+  // Function to reset fields
+  const resetFields = () => {
     setProductName("");
     setCollections([]);
     setCostPerItem("");
@@ -249,7 +251,7 @@ const resetFields = () => {
     setSelectedBrand(null);
     setpackagingDate(null);
     setFiles([]); // Reset files
-};
+  };
 
 
 
@@ -257,243 +259,191 @@ const resetFields = () => {
   return (
     <>
       {/* <AddBrand open={open} onClose={handleClose} /> */}
-      <div className={`${isOpen ? "modelinventory" : "hide"}`}>
-        <div className="modelcontainer">
-       
-
-         
-          <form id="myForm" className="entries" onSubmit={handleSubmit}>
-            <div className="left-form-child"> 
-              <div className="dragimage">
-                <FileUpload onFilesUpdate={handleFilesUpdate} />
+      <div className={`${isOpen ? "block" : "hidden"} fixed inset-0 bg-white dark:bg-boxdark  flex justify-center items-center z-99999`}>
+        <div className=" p-6 rounded-lg shadow-lg h-full w-full ">
+          <form id="myForm" className="flex gap-4 flex-col md:flex-row" onSubmit={handleSubmit}>
+            <div className="md:w-1/2">
+              <div className="mb-6">
+                {/* <FileUpload onFilesUpdate={handleFilesUpdate} /> */}
               </div>
             </div>
-            <div className="right-form-child">
-              <div className="sub-child">
-                <div className="productname">
-                  <h4>Product Name</h4>
+            <div className="md:w-1/2">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium dark:text-white text-gray-700">Product Name</label>
                   <input
                     type="text"
                     name="productName"
                     id="pName"
                     placeholder="Enter product name"
+                    className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                     value={productName}
                     onChange={(e) => setProductName(e.target.value)}
                   />
                 </div>
-                <div className="productname">
-                <h4>Product Description</h4>
-                < TextEditor onChange={handleEditorChange} />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white ">Product Description</label>
+                  <TextEditor onChange={handleEditorChange} />
                 </div>
-                <div className="productname">
-                  <h4>Product ID</h4>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Product ID</label>
                   <input
                     type="text"
                     name="productId"
                     id="pID"
                     placeholder="Enter product ID"
+                    className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                     value={productId}
                     onChange={(e) => setProductId(e.target.value)}
                   />
                 </div>
-                <div className="productname">
-                  <h4>Category</h4>
-                  {/* <Category_Select onSelectCategory={handleCategorySelect} /> */}
+                <div> 
+                  <Category_Select onSelectCategory={handleCategorySelect} />
                 </div>
-                <div className="productname">
-                  <h4>Sub Category</h4>
-                  {/* <SubCategory_Select selectedCategoryId={selectedCategory} onSelectSubCategory={handleSubCategorySelect} /> */}
+                <div>
+                  <SubCategory_Select selectedCategoryId={selectedCategory} onSelectSubCategory={handleSubCategorySelect} />
                 </div>
-                <div className="productname">
-                  <h4>Brand</h4>
-                  <div className="brand-action">
-                    {/* <Brand_Select onSelectBrand={setSelectedBrand} /> */}
-                    <FontAwesomeIcon icon={faPlus} style={{ cursor: 'pointer' }} onClick={handleClickOpen} />
-                    <FontAwesomeIcon icon={faPenToSquare} style={{ cursor: 'pointer' }} />
-                    <FontAwesomeIcon icon={faTrash} style={{ cursor: 'pointer' }} />
+                <div>
+                  <div className="">
+                    <Brand_Select onSelectBrand={setSelectedBrand} />
+                    <FontAwesomeIcon icon={faPlus} className="cursor-pointer text-blue-500" onClick={handleClickOpen} />
+                    <FontAwesomeIcon icon={faPenToSquare} className="cursor-pointer text-yellow-500" />
+                    <FontAwesomeIcon icon={faTrash} className="cursor-pointer text-red-500" />
                   </div>
                 </div>
-                </div>
-                <div className="sub-child2">
-                <div className="productname">
-                  <h4>Status</h4>
-                  {/* <SelectProductStatus onSelectStatus={SelectedProductStatus} /> */}
-                </div>
-                <div className="productname price-container">
-                  <div className="fa-rupee-icon">
-                  <h4>MRP</h4>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  <input
-                    className="err"
-                    name="productPrice"
-                    type="text"
-                    id="pPrice"
-                    placeholder=""
-                    value={MRP}
-                    onChange={handleMrpChange}
-                  />
-                  </div>
-                  <div className="fa-rupee-icon">
-                  <h4>Purchase Price</h4>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  <input
-                    className="err"
-                    name="productPrice"
-                    type="text"
-                    id="pPrice"
-                    placeholder=""
-                    value={purchaseRate}
-                    onChange={(e) => setpurchaseRate(e.target.value)}
-                  />
-                  </div>
-                   <div className="fa-rupee-icon">
-                  <h4>Sell Price</h4>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  <input
-                    className="err"
-                    name="productPrice"
-                    type="text"
-                    id="pPrice"
-                    placeholder=""
-                    value={sellingrate}
-                    onChange={(e) => setsellingRate(e.target.value)}
-                  />
-                  </div>
-                </div>
-                <div className="productname price-container">
-                  <div className="fa-rupee-icon">
-                  <h4>Cost Per Item</h4>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  <input
-                    className="err"
-                    name="productPrice"
-                    type="text"
-                    id="pPrice"
-                    placeholder=""
-                    value={costPerItem}
-                    onChange={handleCostChange}
-                  />
-                  </div>
-                  <div className="fa-rupee-icon">
-                  <h4>Profit</h4>
-                  <FontAwesomeIcon icon={faIndianRupeeSign} />
-                  <input
-                    className="err"
-                    name="productPrice"
-                    type="text"
-                    id="pPrice"
-                    placeholder=""
-                    value={profit}
-                    readOnly
-                    onChange={(e) => setProfit(e.target.value)}
-                  />
-                  </div>
-                  <div>
-                  <h4>Margin</h4>
-                  <input
-                    className="err"
-                    name="productPrice"
-                    type="text"
-                    id="pPrice"
-                    placeholder=""
-                    value={margin}
-                    readOnly
-                    onChange={(e) => setMargin(e.target.value)}
-                  />
-                  </div>
-                </div>
-              
-                <div className="productname price-container">
-                  <div>
-                    <h4>Weight</h4>
-                    <div className="weight-container">
-                      <input
-                        className="err"
-                        name="productPrice"
-                        type="text"
-                        id="pPrice"
-                        placeholder=""
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                      />
-                      {/* <WeightType onWeightChange={(weightType) => setWeightType(weightType)} /> */}
-                    </div>
-                  </div>
-                  <div>
-                    <h4>Quantity</h4>
+              </div>
+            </div>
+            <div className="md:w-1/2 mt-6 md:mt-0 space-y-6">
+              <div>
+                <SelectProductStatus onSelectStatus={SelectedProductStatus} />
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">MRP</label>
+                  <div className="flex relative  items-center mt-2  ">
+                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
                     <input
-                      className="err"
-                      name="productQuantity"
                       type="text"
-                      id="pQuantity"
-                      placeholder=""
-                      value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
+                      className=" block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                      value={MRP}
+                      onChange={handleMrpChange}
                     />
                   </div>
                 </div>
-                <div className="productname">
-                  
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Purchase Price</label>
+                  <div className="flex relative  items-center mt-2 ">
+                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                    <input
+                      type="text"
+                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                      value={purchaseRate}
+                      onChange={(e) => setpurchaseRate(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div className="productname">
-                  <h4>Tags</h4>
-                  {/* <AddTags onChangeTags={(tags) => setTags(tags)} /> */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Sell Price</label>
+                  <div className="flex relative  items-center mt-2 ">
+                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                    <input
+                      type="text"
+                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                      value={sellingrate}
+                      onChange={(e) => setsellingRate(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div className="productname">
-                  <h4>Collections</h4>
-                  {/* <SelectCollection onChangeCollections={(collections) => setCollections(collections)} /> */}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Cost Per Item</label>
+                  <div className="flex relative  items-center mt-2 ">
+                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                    <input
+                      type="text"
+                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                      value={costPerItem}
+                      onChange={handleCostChange}
+                    />
+                  </div>
                 </div>
-                
-                <div className="productname">
-                  <h4>Packaging Date</h4>
-                  {/* <DatePicker
-                    className="myDatePicker"
-                    value={packagingDate}
-                    onChange={(newValue) => setpackagingDate(newValue)}
-                  /> */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Profit</label>
+                  <div className="flex relative  items-center mt-2 ">
+                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                    <input
+                      type="text"
+                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                      value={profit}
+                      readOnly
+                      onChange={(e) => setProfit(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div className="productname">
-                  <h4>Expiry Date</h4>
-                  {/* <DatePicker
-                    className="myDatePicker"
-                    value={expiryDate}
-                    onChange={(newValue) => setExpiryDate(newValue)}
-                  /> */}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Weight</label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                    />
+                    <WeightType onWeightChange={(weightType) => setWeightType(weightType)} />
+                  </div>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Quantity</label>
+                  <input
+                    type="text"
+                    className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
                 </div>
-                <div
-                  className="submitbtn"
-                  style={{
-                    float: "right",
-                    marginTop: "15px",
-                    display: "flex",
-                    gap: "20px",
-                  }}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Tags</label>
+                <TagSelect onChangeTags={(tags) => setTags(tags)} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Collections</label>
+                {/* <SelectCollection onChangeCollections={(collections) => setCollections(collections)} /> */}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Packaging Date</label>
+                  {/* <DatePicker value={packagingDate} onChange={(newValue) => setpackagingDate(newValue)} /> */}
+                  <DatePickerComponent />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Expiry Date</label>
+                  {/* <DatePicker value={expiryDate} onChange={(newValue) => setExpiryDate(newValue)} /> */}
+                </div>
+              </div>
+              <div className="flex justify-end space-x-4 mt-6">
+                <button
+                  className="bg-gray-500 text-white py-2 px-4 rounded-md dark:text-white"
+                  type="button"
+                  onClick={onClose}
                 >
-                  <button
-                    className="btn"
-                    id="discard"
-                    type="button"
-                    onClick={onClose}
-                  >
-                    Discard
-                  </button>
-                  <button
-                    className="btn"
-                    type="submit"
-                    style={{
-                      backgroundColor: "#1366D9",
-                      color: "white",
-                      border: "none",
-                    }}
-                  >
+                  Discard
+                </button>
+                <button
+                  className="bg-blue-600 text-white py-2 px-4 rounded-md dark:text-white"
+                  type="submit"
+                >
                   Add Product
-                  </button>
-                </div>
+                </button>
+              </div>
             </div>
           </form>
         </div>
       </div>
+
     </>
   );
 };

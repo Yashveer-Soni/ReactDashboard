@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // import UpdateProduct from "./UpdateProduct"; 
 import exportToExcel from "../../utils/exportToExcel";
 import TableComponent from "../Tables/TableComponent";
+import ActionButton from "../../snippets/ActionBtn";
 // import SkeletonLoader from "../../snippets/SkeletonLoader";
 
 const ShowInventoryProductsList = ({ openModel }) => {
@@ -38,6 +39,7 @@ const ShowInventoryProductsList = ({ openModel }) => {
     };
 
     const openUpdateModal = (productId) => {
+        console.log("clicked");
         setProductIdToUpdate(productId);
         setUpdateModalOpen(true);
     };
@@ -86,122 +88,28 @@ const ShowInventoryProductsList = ({ openModel }) => {
                 handleClose={handleCloseDialog} 
                 handleAgree={handleAgree} 
             /> */}
-            <div className="headline flex3">
-                <h3 style={{ margin: '0' }}>Products</h3>
-                <div style={{ gap: '10px', display: 'flex' }}>
-                    <button
-                        className="btn"
-                        id="addbutton"
-                        type="button"
+            <div className="flex justify-between items-center mt-5 mb-5">
+                <h3 className="text-xl font-bold">Products</h3>
+                <div className="flex items-center gap-3">
+                    <ActionButton
+                        label="Add Product"
                         onClick={() => openModel(handleProductAdded)}
-                        style={{ backgroundColor: '#1366D9', color: 'white', border: 'none' }}
-                    >
-                        Add Product
-                    </button>
-                    <button className="btn" type="button">
-                        <img src={filter_icon} alt="Filter" /> Filters
-                    </button>
-                    <button className="btn" type="button" onClick={handleExport} disabled={isExporting} >
-                        {isExporting ? 'Exporting...' : 'Download all'}
-                    </button>
+                        className="bg-blue-700 border-none px-5 text-sm text-white font-medium"
+                    />
+                    <ActionButton
+                        label="Filters"
+                        className="bg-blue-700 border-none px-5 text-sm text-white font-medium"
+                    />
+                    <ActionButton
+                        label={isExporting ? 'Exporting...' : 'Download all'}
+                        disabled={isExporting}
+                        onClick={handleExport}
+                        className="bg-blue-700 border-none px-5 text-sm text-white font-medium"
+                    />
                 </div>
             </div>
-            <TableComponent />
+            <TableComponent onClickEdit={openUpdateModal} onClickDelete={openDeleteDialog} products={products} loading={loading} />
             <div>
-           
-                <table>
-                    <thead>
-                        <tr style={{ border: 'transparent' }}>
-                            <th>S. No.</th>
-                            <th>Product Name</th>
-                            <th>Brand</th>
-                            <th>Category</th>
-                            <th>Sub Category</th>
-                            <th>MRP</th>
-                            <th>Selling Rate</th>
-                            <th>Stock</th>
-                            <th>Weight</th>
-                            <th>Packaging Date</th>
-                            <th>Expiry Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                   
-                    {loading ? (
-                        <>
-                        {[...Array(10)].map((_, rowIndex) => (
-                            <tr key={rowIndex}>
-                              {skeletonConfigs.map((config, cellIndex) => (
-                                <td key={cellIndex}>
-                                  {/* <SkeletonLoader
-                                    variants={[config.variant]}
-                                    widths={[config.width]}
-                                    heights={[config.height]}
-                                    spacing={5}
-                                    styles={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                                  /> */}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                          </>
-                        
-                    ):(
-                        products.map((product, index) => (
-                            <tr key={index} style={{ cursor: 'pointer' }}>
-                                <td>
-                                    <NavLink to={`/Inventory/product/${product.item.id}`} style={{ textDecoration: 'none', color: 'blue' }}>
-                                        {index + 1}
-                                        {/* {product.id} */}
-                                    </NavLink>
-                                </td>
-                                <td>
-                                    <NavLink to={`/Inventory/product/${product.item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        {product.item.item_name}
-                                    </NavLink>
-                                </td>
-                                <td>
-                                    <NavLink to={`/Inventory/product/${product.item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        {product.item.brand.brand_name}
-                                    </NavLink>
-                                </td>
-                                <td>
-                                    <NavLink to={`/Inventory/product/${product.item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        {product.item.sub_category.category.category_name}
-                                    </NavLink>
-                                </td>
-                                <td>
-                                    <NavLink to={`/Inventory/product/${product.item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        {product.item.sub_category.sub_category_name}
-                                    </NavLink>
-                                </td>
-                                <td>₹{product.mrp}</td>
-                                <td>₹{product.purchase_rate}</td>
-                                <td>{product.unit.quantity}</td>
-                                <td>{product.unit.weight}</td>
-                                <td>{product.pkt_date || 'N/A'}</td>
-                                <td>{product.expired_date || 'N/A'}</td>
-                                <td>
-                                    <div className="Edit-Delete_icons">
-                                        <FontAwesomeIcon 
-                                            icon={faTrash} 
-                                            onClick={() => openDeleteDialog(product.item.id)} 
-                                            style={{ color: 'red' }}    
-                                        />
-                                        <FontAwesomeIcon 
-                                            icon={faPenToSquare} 
-                                            onClick={() => openUpdateModal(product.id)} 
-                                        />
-                                    </div>
-                                </td>
-                            </tr>
-                        ))
-                    )}
-                    
-                        
-                    </tbody>
-                </table>
                 <div className="pagination flex2">
                 {/* <Paginate   
                     count={totalPages}

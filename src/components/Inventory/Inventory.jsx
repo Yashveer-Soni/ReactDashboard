@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import ModelInventory from "../../snippets/Model_Inventory";
+import ModelInventory from "../../snippets/Model_Inventory";
 import ShowInventoryProductsList from "./ShowInventoryProductsList";
 import {  NavLink } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FetchProducts } from "../../api/FetchProducts";
 import { Icon } from '@iconify/react';
 import HomepageCards from "../Card/HomepageCards";
+import TableComponent from "../Tables/TableComponent";
 const Inventory = () => {
     const [modelopen, setmodelopen] = useState(false);
 
@@ -103,7 +104,7 @@ const Inventory = () => {
             />
         ))}
         </div>
-            {/* <ModelInventory isOpen={modelopen} onClose={closemodel} /> */}
+            <ModelInventory isOpen={modelopen} onClose={closemodel} />
             <div className="overall">
                 <ShowInventoryProductsList openModel={openModel} />
             </div>

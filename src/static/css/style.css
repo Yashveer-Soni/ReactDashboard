@@ -60,6 +60,10 @@ body{
 .SearchResults .suggestions-list{
     display: none;
 }
+.SearchResultsSection{
+    display: flex;
+    justify-content: center;
+}
 .no-results{
     text-align: center;
     font-weight: 500;
@@ -106,10 +110,10 @@ body{
 .css-eglki6-MuiLinearProgress-root{
     background-color: white!important;
 }
-.flex{
+/* .flex{
     display: flex;
     flex-direction: column;
-}
+} */
 .flex2{
     display: flex;
     align-items: center;
@@ -232,9 +236,46 @@ body{
 .maincontent{
     width: 100%;
     padding-left: 17rem;
-    transition: padding-left 0.5s ease-in-out;
 
 }
+.openSidebar {
+    position: absolute;
+    background: black;
+    height: 60px;
+    width: 35px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    display: flex;
+    right: 0;
+    top: 50%;
+    cursor: pointer;
+    transform: translateY(-50%);
+    align-items: center;
+    justify-content: center;
+    
+}
+.openSidebar>button{
+min-width: auto!important;
+}
+.sidebar .PrivateSwipeArea-root{
+    z-index: -1!important;
+}
+.openSidebar svg{
+    animation: rotateElement 2s linear infinite; 
+}
+.openSidebar svg path {
+    fill: white;
+}
+
+@keyframes rotateElement {
+    0% {
+        transform: rotate(0deg); 
+    }
+    100% {
+        transform:rotate(360deg);
+    }
+}
+
 .nav{
     display: grid;
     align-items: center;
@@ -242,6 +283,33 @@ body{
     padding: 16px;
     grid-template-columns: 0.5fr 1fr;
     background-color: white;
+}
+.logoContainer{
+    grid-area: logo;
+}
+.nav2{
+    display: grid;
+    align-items: center;
+    grid-template-areas: "logo searchbar notification ";
+    padding: 16px;
+    grid-template-columns: 0fr 3fr 0fr;
+    background-color: white;
+    gap: 253px;
+    max-height: 42px;
+    align-items: start;
+    justify-items: stretch;
+}
+.nav2 .suggestions-list{
+    max-width: 100%!important;
+    position: relative!important;
+    z-index: 2;
+}
+.maincontent2{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    background-color: white;
+    align-items: center;
 }
 .searchinput{
     height: 34px;
@@ -373,22 +441,8 @@ body{
     margin-left: 17rem;
     transition: margin 0.5s ease-in-out;
 }
-table{
-    border-collapse: collapse;
-}
-th, td , h4{
-    text-align: start;
-    color: #5D6679;
-    font-family: 'Roboto';
-    font-weight:500 ;
-}
-th{
-    width: 1%;
-}
-tr{
-    border-top: 1px solid #F0F1F3;
-    height: 50px;
-}
+
+
 .headline h3{
     color: #383E49;
 }
@@ -688,7 +742,6 @@ tr{
     justify-content: space-between;
     justify-items: start;
     margin-left: 17rem;
-    transition: margin 0.5s ease-in-out;
 }
 .letsd{
     background-color: white; 

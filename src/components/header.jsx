@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { logo } from '../snippets/Image_load';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faBox, faChartSimple, faUser, faBagShopping, faGear, faRightFromBracket, faMagnifyingGlass, faBell } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faBox, faChartSimple, faUser, faBagShopping, faGear, faRightFromBracket,  faBell } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from './LoadingSpinner';
-import CustomSeparator from "../snippets/CustomSeparator";
+// import CustomSeparator from "../snippets/CustomSeparator";
 import SearchBar from "../Helper/searchBar";
+// import SwipeableTemporaryDrawer from "../layout/sidebar";
 
 const Header = () => {
     const location = useLocation();
@@ -31,14 +32,9 @@ const Header = () => {
           setIsAuthenticated(false);
         }
     
-        // Redirect if not authenticated
-        if (!token) {
-          navigate('/signin/', { replace: true });
-        }
     
       }, [location.pathname, navigate]);
 
-    // Skip rendering Header if on '/signin'
     if (location.pathname === '/signin/') {
         return null;
     }
@@ -57,7 +53,8 @@ const Header = () => {
     return (
         <>
             {loading && <LoadingSpinner />} {/* Display the spinner if loading */}
-           
+          
+           {/* <SwipeableTemporaryDrawer /> */}
             <div className="container">
                 {isSuperuser&&(
                 <div className="sidebar ">
@@ -72,7 +69,7 @@ const Header = () => {
                         <li>
                             <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>
                                 <FontAwesomeIcon icon={faHouse} />
-                                <h4>Dashboard</h4>
+                                <h4 className="text-3xl font-bold underline">Dashboard</h4>
                             </NavLink>
                         </li>
                         <li>
@@ -126,8 +123,8 @@ const Header = () => {
                 </div>
                 )}
 
-                <div className="maincontent" style={{paddingLeft:!isSuperuser?'0':'17rem'}}>
-                    <div className="nav">
+                <div className={!isSuperuser?'maincontent2':'maincontent'} style={{paddingLeft:!isSuperuser?'0':'17rem'}}>
+                    <div className={!isSuperuser?'nav2 page-width':'nav'}>
                         
                         {!isSuperuser&&(
                         <div className="logoContainer">
@@ -137,7 +134,7 @@ const Header = () => {
                         </div>
                         )}
 
-                        {!isSearchResultsPage && <SearchBar />}
+                        <SearchBar hiddensearch={isSearchResultsPage}  />
 
                         {!isSuperuser&&(
                             <>
@@ -166,7 +163,7 @@ const Header = () => {
                     </div>
                     {isSuperuser&&(
                     <div className="customseparator">
-                        <CustomSeparator/>
+                        {/* <CustomSeparator/> */}
                     </div>
                     )}
                 </div>

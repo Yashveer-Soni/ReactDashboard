@@ -12,28 +12,27 @@ import Cookies from 'js-cookie';
 
 
 const Signin = () => {
-    const [username, setUsername] = useState('');
+    const [email, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [role, setRole] = useState(false); // State to track if the user is superuser
+    const [role, setRole] = useState(false); 
 
-    const navigate = useNavigate(); // Initialize the useNavigate hook
+    const navigate = useNavigate(); 
 
-    // Check if user is already authenticated
     useEffect(() => {
         const accessToken = localStorage.getItem('access_token');
         if (accessToken) {
-            window.location.href = '/'; // If already logged in, navigate to the home page
+            navigate('/');
         }
     }, [navigate]);
 
-    // Fetch CSRF token from the backend
     useEffect(() => {
         const fetchCsrfToken = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/api/csrf/');
-                Cookies.set('csrftoken', response.data.csrfToken); // Store CSRF token in cookies
+                const response = await axios.get('http://localhost:8000/csrf/');
+                Cookies.set('csrftoken', response.data.csrfToken);
             } catch (error) {
+                console.error('Error:', error.response.data);
                 console.error('Failed to fetch CSRF token:', error);
             }
         };
@@ -46,12 +45,12 @@ const Signin = () => {
         try {
             const csrfToken = Cookies.get('csrftoken'); 
             const response = await axios.post('http://localhost:8000/api/token/', {
-                username,
+                email,
                 password
             },
             {
                 headers: {
-                    'X-CSRFToken': csrfToken // Send the CSRF token in the headers
+                    'X-CSRFToken': csrfToken
                 },
                 withCredentials: true
             });
@@ -59,21 +58,19 @@ const Signin = () => {
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
             localStorage.setItem('role', response.data.role);
-            localStorage.setItem('username', response.data.username);
+            localStorage.setItem('username', response.data.email);
 
 
-            // Decode JWT to get the expiration time
             const decodedToken = jwtDecode(response.data.access);
             const expirationTime = decodedToken.exp * 1000; 
             localStorage.setItem('token_expiry', expirationTime);
-
-            // Update the state based on response
+            
             setRole(response.data.role);
             
             axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
 
             toast.success('Login successful!');
-            window.location.href = '/'; // Navigate to the homepage after successful login
+            window.location.href = '/'; 
         } catch (error) {
             console.error('Login failed', error);
             toast.error('Login failed. Please check your credentials.');
@@ -84,8 +81,8 @@ const Signin = () => {
 
     return (
         <>
-            <ToastContainer /> {/* Add ToastContainer */}
-            {loading && <LoadingSpinner />} {/* Display the spinner if loading */}
+            <ToastContainer />
+            {loading && <LoadingSpinner />} 
             <div className="container flex2" style={{ height: "100vh", justifyContent: "space-around" }}>
                 <div className="leftchild flex4">
                     <div className="imagechild">
@@ -98,7 +95,7 @@ const Signin = () => {
                     </div>
                     <h1 className="textgradient">Log in to your account</h1>
                     <label htmlFor="username" style={{ marginTop: "18px" }}>Username</label>
-                    <input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter your username" />
+                    <input type="text" id="username" name="username" value={email} onChange={(e) => setUsername(e.target.value)} placeholder="Enter your username" />
                     <label htmlFor="password" style={{ marginTop: "15px" }}>Password</label>
                     <input type="password" id="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
                     <div className="flex3">

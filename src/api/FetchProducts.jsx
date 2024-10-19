@@ -1,17 +1,23 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { createContext, useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 
-// Fetch products for the grid (paginated)
-const FetchProducts = (page = 1) => {
+// Create a context
+export const ProductContext = createContext();
+
+// Create a provider component
+export const FetchProducts = ({ children }) => {
     const [products, setProducts] = useState([]); 
+    const [sliderProducts, setSliderProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [currentPage, setCurrentPage] = useState(page);
+    const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const itemsPerPage = 20;
     const token = localStorage.getItem('access_token');
 
+    // Fetch products for the grid (paginated)
     const fetchProducts = async () => {
+        setLoading(true);
         try {
             const response = await axios.get('http://127.0.0.1:8000/api/inventory/', {
                 headers: {
@@ -31,23 +37,9 @@ const FetchProducts = (page = 1) => {
         }
     };
 
-    useEffect(() => {
-        fetchProducts();
-    }, [currentPage]);  // Fetch products when currentPage changes
-
-    const memoizedProducts = useMemo(() => products, [products]);
-
-    return { products: memoizedProducts, loading, error, fetchProducts, currentPage, setCurrentPage, totalPages };
-};
-
-// Fetch products for the Swiper slider (no pagination)
-const FetchSliderProducts = () => {
-    const [sliderProducts, setSliderProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const token = localStorage.getItem('access_token');
-
+    // Fetch products for the Swiper slider (no pagination)
     const fetchSliderProducts = async () => {
+        setLoading(true);
         try {
             const response = await axios.get('http://127.0.0.1:8000/api/inventory/', {
                 headers: {
@@ -67,12 +59,28 @@ const FetchSliderProducts = () => {
     };
 
     useEffect(() => {
-        fetchSliderProducts();
-    }, []);  // Fetch products once when component mounts
+        fetchProducts(); // Fetch products when currentPage changes
+    }, [currentPage]);
 
+    useEffect(() => {
+        fetchSliderProducts(); // Fetch slider products once when the component mounts
+    }, []);
+
+    const memoizedProducts = useMemo(() => products, [products]);
     const memoizedSliderProducts = useMemo(() => sliderProducts, [sliderProducts]);
 
-    return { sliderProducts: memoizedSliderProducts, loading, error };
+    return (
+        <ProductContext.Provider value={{
+            products: memoizedProducts,
+            sliderProducts: memoizedSliderProducts,
+            loading,
+            error,
+            fetchProducts,
+            currentPage,
+            setCurrentPage,
+            totalPages
+        }}>
+            {children}
+        </ProductContext.Provider>
+    );
 };
-
-export { FetchProducts, FetchSliderProducts };

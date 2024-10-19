@@ -1,11 +1,12 @@
-import { React, useState } from "react";
-import ModelInventory from "../../snippets/Model_Inventory";
+import React, { useState } from "react";
+// import ModelInventory from "../../snippets/Model_Inventory";
 import ShowInventoryProductsList from "./ShowInventoryProductsList";
 import {  NavLink } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
+import { FetchProducts } from "../../api/FetchProducts";
+import { Icon } from '@iconify/react';
+import HomepageCards from "../Card/HomepageCards";
 const Inventory = () => {
     const [modelopen, setmodelopen] = useState(false);
 
@@ -16,65 +17,97 @@ const Inventory = () => {
     const closemodel = () => {
         setmodelopen(false);
     }
+    const cardsData = [
+        {
+          icon: <Icon icon="iconamoon:category-light"  />,
+          title: "14",
+          subtitle: "Categories",
+          percentage: "0.43%",
+          trend: (
+            <svg
+              className="fill-meta-3"
+              width="10"
+              height="11"
+              viewBox="0 0 10 11"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M4.35716 2.47737L0.908974 5.82987L5.0443e-07 4.94612L5 0.0848689L10 4.94612L9.09103 5.82987L5.64284 2.47737V10.0849H4.35716V2.47737Z" />
+            </svg>
+          ),
+        },
+        {
+          icon: <Icon icon="fluent-mdl2:product-variant" className="fill-primary" />,
+          title: "868",
+          subtitle: "Total Products",
+          percentage: "1.23%",
+          trend: (
+            <svg
+              className="fill-meta-3"
+              width="10"
+              height="11"
+              viewBox="0 0 10 11"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M4.35716 2.47737L0.908974 5.82987L5.0443e-07 4.94612L5 0.0848689L10 4.94612L9.09103 5.82987L5.64284 2.47737V10.0849H4.35716V2.47737Z" />
+            </svg>
+          ),
+        },
+        {
+            icon: <Icon icon="la:sellsy" className="fill-primary" />,
+            title: "5",
+            subtitle: "Top Selling",
+            percentage: "1.23%",
+            trend: (
+              <svg
+                className="fill-meta-3"
+                width="10"
+                height="11"
+                viewBox="0 0 10 11"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M4.35716 2.47737L0.908974 5.82987L5.0443e-07 4.94612L5 0.0848689L10 4.94612L9.09103 5.82987L5.64284 2.47737V10.0849H4.35716V2.47737Z" />
+              </svg>
+            ),
+          },
+          {
+            icon: <Icon icon="icon-park-outline:chart-stock" className="fill-primary" />,
+            title: "12",
+            subtitle: "Low Stocks",
+            percentage: "1.23%",
+            trend: (
+              <svg
+                className="fill-meta-3"
+                width="10"
+                height="11"
+                viewBox="0 0 10 11"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M4.35716 2.47737L0.908974 5.82987L5.0443e-07 4.94612L5 0.0848689L10 4.94612L9.09103 5.82987L5.64284 2.47737V10.0849H4.35716V2.47737Z" />
+              </svg>
+            ),
+          },
+      ];
 
     return (
         <>
-        <ToastContainer />
-            <ModelInventory isOpen={modelopen} onClose={closemodel} />
+         <FetchProducts>
+         <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4 py-3">
+         {cardsData.map((card, index) => (
+            <HomepageCards 
+            key={index}
+            icon={card.icon}
+            title={card.title}
+            subtitle={card.subtitle}
+            percentage={card.percentage}
+            trend={card.trend}
+            />
+        ))}
+        </div>
+            {/* <ModelInventory isOpen={modelopen} onClose={closemodel} /> */}
             <div className="overall">
-                <div className="overallinventory">
-                    <div className="headline">
-                        <h3 style={{ margin: '0px' }}>Overall Inventory</h3>
-                    </div>
-                    <div className="overallinventoryitem">
-                        <NavLink to="/Inventory/Categories" className="categories flex tpborder">
-                            <h4 style={{ margin: '0', color: '#1570EF' }}>Categories</h4>
-                            <h5>14</h5>
-                            <span className="desctitle">Last 7 days</span>
-                        </NavLink>
-                        <div className="totalproduct tpborder">
-                            <h4 style={{ margin: '0', color: '#E19133' }}>Total Products</h4>
-                            <div className="tspace flex3">
-                                <div className="tspace1">
-                                    <h4>868</h4>
-                                    <span className="desctitle">Last 7 days</span>
-                                </div>
-                                <div className="tspace2">
-                                    <h4>₹25000</h4>
-                                    <span className="desctitle">Revenue</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="topselling tpborder">
-                            <h4 style={{ color: '#845EBC', margin: '0' }}>Top Selling</h4>
-                            <div className="tspace flex3">
-                                <div className="tspace1">
-                                    <h4>5</h4>
-                                    <span className="desctitle">Last 7 days</span>
-                                </div>
-                                <div className="tspace2" style={{ textAlign: 'right' }}>
-                                    <h4>₹2500</h4>
-                                    <span className="desctitle">Cost</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="lowstock">
-                            <h4 style={{ color: '#F36960', margin: '0' }}>Low Stocks</h4>
-                            <div className="tspace flex3">
-                                <div className="tspace1">
-                                    <h4>12</h4>
-                                    <span className="desctitle">Ordered</span>
-                                </div>
-                                <div className="tspace2">
-                                    <h4 style={{ textAlign: 'right' }}>2</h4>
-                                    <span className="desctitle">Not in stock</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    <ShowInventoryProductsList openModel={openModel} />
+                <ShowInventoryProductsList openModel={openModel} />
             </div>
+            </FetchProducts>
         </>
     )
 }

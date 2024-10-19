@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
-import dayjs from 'dayjs';
 import Category_Select from "../../snippets/CustomCategorySelect";
 import SubCategory_Select from "../../snippets/CustomSubCategorySelect";
 import Brand_Select from "../../snippets/CustomBrandsSelect";
 import FileUpload from "../../snippets/FileUpload";
-import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from 'dayjs';
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import TextEditor from "../../utils/TextEditor";
+import AddTags from "../../snippets/AddTags";
+import SelectCollection from "../../snippets/SelectCollection"
+import SelectProductStatus from "../../snippets/SelectProductStatus";
+import WeightType from "../../snippets/WeightType";
+
 
 const UpdateProduct = ({ productId, isOpen, onClose, onProductUpdated }) => {
   const [productName, setProductName] = useState("");
@@ -22,6 +28,13 @@ const UpdateProduct = ({ productId, isOpen, onClose, onProductUpdated }) => {
   const [selectedBrand, setSelectedBrand] = useState(null);
   const [files, setFiles] = useState([]);
   const [load, setLoad] = useState(false);
+  const [editorContent, setEditorContent] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState(0);
+  const [costPerItem, setCostPerItem] = useState("");
+  const [profit, setProfit] = useState("");
+  const [margin, setMargin] = useState("");
+  const [tags, setTags] = useState([]);
+  const [collections, setCollections] = useState([]);
   const token=localStorage.getItem('access_token');
 
 
@@ -190,19 +203,19 @@ const UpdateProduct = ({ productId, isOpen, onClose, onProductUpdated }) => {
               </div>
               <div className="productname">
                 <h4>Packaging Date</h4>
-                <DatePicker
+                {/* <DatePicker
                   className="myDatePicker"
                   value={packagingDate}
                   onChange={(newValue) => setPackagingDate(newValue)}
-                />
+                /> */}
               </div>
               <div className="productname">
                 <h4>Expiry Date</h4>
-                <DatePicker
+                {/* <DatePicker
                  className="myDatePicker"
                   value={expiryDate}
                   onChange={(newValue) => setExpiryDate(newValue)}
-                />
+                /> */}
               </div>
               <div
                 className="submitbtn"

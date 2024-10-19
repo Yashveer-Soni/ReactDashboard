@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { filter_icon } from "../../snippets/Image_load";
 import { useLocation, NavLink, useNavigate } from 'react-router-dom';
-import {FetchProducts} from "../../api/FetchProducts";
+import {ProductContext} from "../../api/FetchProducts";
 import useHandleDeleteProduct from "../../api/HandleDeleteProduct";
-import Paginate from "../../snippets/Paginate";
+// import Paginate from "../../snippets/Paginate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AlertDialog from "../../snippets/AlertDialog";
-import UpdateProduct from "./UpdateProduct"; // Import the UpdateProduct component
-import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
+// import AlertDialog from "../../snippets/AlertDialog";
+// import UpdateProduct from "./UpdateProduct"; 
 import exportToExcel from "../../utils/exportToExcel";
-import SkeletonLoader from "../../snippets/SkeletonLoader";
+import TableComponent from "../Tables/TableComponent";
+// import SkeletonLoader from "../../snippets/SkeletonLoader";
 
 const ShowInventoryProductsList = ({ openModel }) => {
-    const { products, loading, error, fetchProducts, currentPage, setCurrentPage, totalPages } = FetchProducts();
+    const { products, loading, error, fetchProducts, currentPage, setCurrentPage, totalPages } = useContext(ProductContext);
     const { deleteError, handleDeleteProduct } = useHandleDeleteProduct(fetchProducts);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [productIdToDelete, setProductIdToDelete] = useState(null);
@@ -79,19 +78,14 @@ const ShowInventoryProductsList = ({ openModel }) => {
     if (error) return <p>Error: {error.message}</p>;
 
     return (
-        <div className="overallproducts">
-            {isExporting &&(
-            <Box sx={{ width: '100%' }}>
-            <LinearProgress variant="determinate" value={progress} />
-            </Box>
-            )}
+        <>
             
             <ToastContainer />
-            <AlertDialog 
+            {/* <AlertDialog 
                 open={dialogOpen} 
                 handleClose={handleCloseDialog} 
                 handleAgree={handleAgree} 
-            />
+            /> */}
             <div className="headline flex3">
                 <h3 style={{ margin: '0' }}>Products</h3>
                 <div style={{ gap: '10px', display: 'flex' }}>
@@ -112,6 +106,7 @@ const ShowInventoryProductsList = ({ openModel }) => {
                     </button>
                 </div>
             </div>
+            <TableComponent />
             <div>
            
                 <table>
@@ -139,13 +134,13 @@ const ShowInventoryProductsList = ({ openModel }) => {
                             <tr key={rowIndex}>
                               {skeletonConfigs.map((config, cellIndex) => (
                                 <td key={cellIndex}>
-                                  <SkeletonLoader
+                                  {/* <SkeletonLoader
                                     variants={[config.variant]}
                                     widths={[config.width]}
                                     heights={[config.height]}
                                     spacing={5}
                                     styles={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                                  />
+                                  /> */}
                                 </td>
                               ))}
                             </tr>
@@ -208,23 +203,23 @@ const ShowInventoryProductsList = ({ openModel }) => {
                     </tbody>
                 </table>
                 <div className="pagination flex2">
-                <Paginate   
+                {/* <Paginate   
                     count={totalPages}
                     page={currentPage}
                     onPageChange={page => setCurrentPage(page)} 
-                />
+                /> */}
                 </div>
             </div>
 
-            {updateModalOpen && (
+            {/* {updateModalOpen && (
                 <UpdateProduct
                     productId={productIdToUpdate}
                     isOpen={updateModalOpen}
                     onClose={handleCloseUpdateModal}
                     onProductUpdated={fetchProducts}
                 />
-            )}
-        </div>
+            )} */}
+       </>
     );
 };
 

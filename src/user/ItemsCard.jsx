@@ -1,5 +1,5 @@
-import React from 'react';
-import { FetchProducts, FetchSliderProducts } from '../api/FetchProducts';
+import React,{useContext } from 'react';
+import { ProductContext  } from '../api/FetchProducts';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css';
@@ -14,8 +14,7 @@ function generateSlug(itemName) {
 }
 
 export default function ItemsCard() {
-    const { products, loading, error, currentPage, setCurrentPage, totalPages } = FetchProducts();
-    const { sliderProducts } = FetchSliderProducts();
+    const { products, loading, error, currentPage, setCurrentPage, totalPages, sliderProducts  } = useContext(ProductContext );
     return (
         <>
             <div className='center ItemCard'>

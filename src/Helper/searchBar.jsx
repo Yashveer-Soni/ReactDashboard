@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate, NavLink } from 'react-router-dom'; // Import Link and useNavigate for routing
+import { Link, useNavigate, NavLink,useLocation } from 'react-router-dom'; // Import Link and useNavigate for routing
 
-const SearchBar = ({ onSearch, placeholder }) => {
+const SearchBar = ({ onSearch, placeholder,hiddensearch }) => {
     const [query, setQuery] = useState(''); 
     const [suggestions, setSuggestions] = useState([]); 
     const [isFocused, setIsFocused] = useState(false); 
@@ -65,26 +65,26 @@ const SearchBar = ({ onSearch, placeholder }) => {
     };
 
     const handleClickSuggestion = (suggestion) => {
-        setQuery(suggestion.item.item_name); // Update query with the selected suggestion's name
-        setIsFocused(false); // Manually close the suggestions list after selecting
-        navigate(`Inventory/product/${suggestion.item.id}`); // Redirect to the product details page
+        setQuery(suggestion.item.item_name); 
+        setIsFocused(false); 
+        navigate(`Inventory/product/${suggestion.item.id}`); 
     };
 
     const handleSeeAllClick = () => {
-        setIsFocused(false); // Close suggestions list
-        navigate(`/search-results?query=${query}`); // Redirect to the search results page
+        setIsFocused(false);
+        navigate(`/search-results?query=${query}`); 
     };
 
-    // Handle "Enter" key press
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            handleSeeAllClick(); // Trigger the "See All" functionality
+            handleSeeAllClick(); 
         }
     };
 
     return (
-        <div className="search-bar">
-            <div className="searchbar">
+        <div className="search-bar" >
+            <div className="searchbar" style={{display: hiddensearch ? "none" : "flex"}}>
                 <div className="searchsvg">
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </div>
@@ -95,7 +95,7 @@ const SearchBar = ({ onSearch, placeholder }) => {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
-                    onKeyDown={handleKeyDown} // Add onKeyDown event handler
+                    onKeyDown={handleKeyDown} 
                     placeholder={placeholder || "Search..."}
                 />
             </div>
@@ -111,7 +111,7 @@ const SearchBar = ({ onSearch, placeholder }) => {
                         <NavLink onMouseDown={handleSeeAllClick}>See all results</NavLink> {/* "See all" link */}
                     </li>
                 </ul>
-            )}
+            )} 
         </div>
     );
 };

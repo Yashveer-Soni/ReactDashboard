@@ -11,7 +11,7 @@ const SearchResults = () => {
     const initialQuery = queryParams.get('query') || ''; 
     const [query, setQuery] = useState(initialQuery);
     const token = localStorage.getItem('access_token');
-
+    const role = localStorage.getItem('role');
     const fetchSearchResults = async (searchQuery) => {
         if (!searchQuery) return; 
 
@@ -33,48 +33,51 @@ const SearchResults = () => {
     }, [query, token]);
 
     return (
-        <div className='SearchResults '>
+        <div className='SearchResultsSection'>
+            <div className={`SearchResults ${role === "user" ? "page-width" : ""}`} style={{ paddingLeft: (role==='user'? '0px' : '17rem' )}}>
 
-            <SearchBar 
-                onSearch={(q) => {
-                    setQuery(q); 
-                    fetchSearchResults(q); 
-                }} 
-                placeholder="Search..." 
-            />
+                <SearchBar 
+                    onSearch={(q) => {
+                        setQuery(q); 
+                        fetchSearchResults(q); 
+                    }} 
+                    placeholder="Search..." 
+                    hiddensearch={false}
+                />
 
-            <div className=' ItemCard' style={{ flexDirection: 'column', alignItems: 'center' }}>
-            {results && results.length > 0 ? (
-                <div className='card-grid-container'>
-                    {results.map((item, index) => (
-                    <Link to={`/Inventory/product/${item.item.id}`} key={index} className='slidecard'>
-                        <div>
-                        {item?.item?.images?.length > 0 ? (
-                            <img
-                            src={item?.item?.images[0]?.image}
-                            lazysizes="true"
-                            loading="lazy"
-                            height="150px"
-                            width="100%"
-                            alt={item?.item?.item_name}
-                            />
-                        ) : (
-                            <p>No Image Available</p>
-                        )}
-                        </div>
-                        <div className='card-contents'>
-                        <h3>{item?.item?.item_name}</h3>
-                        <div>
-                            <FormatWeight weight={item?.unit?.weight} />
-                        </div>
-                        <span>₹ {item?.mrp}</span>
-                        </div>
-                    </Link>
-                    ))}
+                <div className=' ItemCard' style={{ flexDirection: 'column', alignItems: 'center' }}>
+                {results && results.length > 0 ? (
+                    <div className='card-grid-container'>
+                        {results.map((item, index) => (
+                        <Link to={`/Inventory/product/${item.item.id}`} key={index} className='slidecard'>
+                            <div>
+                            {item?.item?.images?.length > 0 ? (
+                                <img
+                                src={item?.item?.images[0]?.image}
+                                lazysizes="true"
+                                loading="lazy"
+                                height="150px"
+                                width="100%"
+                                alt={item?.item?.item_name}
+                                />
+                            ) : (
+                                <p>No Image Available</p>
+                            )}
+                            </div>
+                            <div className='card-contents'>
+                            <h3>{item?.item?.item_name}</h3>
+                            <div>
+                                <FormatWeight weight={item?.unit?.weight} />
+                            </div>
+                            <span>₹ {item?.mrp}</span>
+                            </div>
+                        </Link>
+                        ))}
+                    </div>
+                    ) : (
+                    <p className='no-results'>No results found.</p>
+                    )}
                 </div>
-                ) : (
-                <p className='no-results'>No results found.</p>
-                )}
             </div>
         </div>
     );

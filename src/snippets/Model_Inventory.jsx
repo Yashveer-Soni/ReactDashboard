@@ -2,15 +2,14 @@ import { useState, React, useEffect } from "react";
 import Category_Select from "./CustomCategorySelect";
 import SubCategory_Select from "./CustomSubCategorySelect";
 import Brand_Select from "./CustomBrandsSelect";
-// import FileUpload from "./FileUpload";
+import FileUpload from "./FileUpload";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios from "axios"; // Import axios for HTTP requests
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faPenToSquare, faTrash, faIndianRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import axios from "axios"; 
+import { motion } from 'framer-motion';
+
 // import AddBrand from '../components/Inventory/Brand/AddBrand';
 import TextEditor from "../utils/TextEditor";
-
 // import SelectCollection from "./SelectCollection"
 import SelectProductStatus from "./SelectProductStatus";
 import WeightType from "./WeightType";
@@ -18,6 +17,9 @@ import WeightType from "./WeightType";
 import { Icon } from '@iconify/react';
 import TagSelect from "./TagSelect";
 import DatePickerComponent from "./DatePicker";
+import MultiSelect from "./MultiSelect";
+import formatDate from "../Helper/formatDate";
+import validation from "../Helper/validation";
 
 
 const Model_Inventory = ({ isOpen, onClose, onProductAdded }) => {
@@ -28,8 +30,6 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded }) => {
   const [weight, setWeight] = useState(localStorage.getItem("weight") || "");
   const [weightType, setWeightType] = useState(localStorage.getItem("weightType") || 0);
   const [quantity, setQuantity] = useState(localStorage.getItem("quantity") || "");
-  // const [expiryDate, setExpiryDate] = useState(localStorage.getItem("expiryDate") ? dayjs(localStorage.getItem("expiryDate")) : null);
-  // const [packagingDate, setpackagingDate] = useState(localStorage.getItem("packagingDate") ? dayjs(localStorage.getItem("packagingDate")) : null);
   const [expiryDate, setExpiryDate] = useState(localStorage.getItem("expiryDate"));
   const [packagingDate, setpackagingDate] = useState(localStorage.getItem("packagingDate"));
   const [selectedCategory, setSelectedCategory] = useState(localStorage.getItem("selectedCategory") || null);
@@ -49,8 +49,38 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded }) => {
   const [sellingrate, setsellingRate] = useState(localStorage.getItem("sellingrate") || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isError, setIsError] = useState(false);
-
   const token = localStorage.getItem('access_token');
+  const inputVariants = {
+    error: {    borderColor: 'red', 
+      transition: { duration: 0.3 },
+      x: [0, -5, 5, -5, 5, 0], 
+    },
+  };
+  
+
+  console.log("productName" + productName);
+  console.log("productId" + productId);
+  console.log("MRP" + MRP);
+  console.log("purchaseRate" + purchaseRate);
+  console.log("weight" + weight);
+  console.log("weightType" + weightType);
+  console.log("quantity" + quantity);
+  console.log("expiryDate" + expiryDate);
+  console.log("packagingDate" + packagingDate);
+  console.log("selectedCategory" + selectedCategory);
+  console.log("selectedSubCategory" + selectedSubCategory);
+  console.log("selectedBrand" + selectedBrand);
+  console.log("editorContent" + editorContent);
+  console.log("selectedStatus" + selectedStatus);
+  console.log("costPerItem" + costPerItem);
+  console.log("profit" + profit);
+  console.log("margin" + margin);
+  console.log("tags" + tags);
+  console.log("collections" + collections);
+  console.log("files" + files);
+  console.log("sellingrate" + sellingrate);
+
+
 
   const handleCostChange = (e) => {
     const cost = parseFloat(e.target.value) || 0;
@@ -140,12 +170,48 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded }) => {
 
 
   }, [productName, productId, MRP, sellingrate, purchaseRate, weight, quantity, expiryDate, packagingDate, selectedCategory, selectedSubCategory, selectedBrand, files, editorContent, selectedStatus, costPerItem, profit, margin, tags, collections]);
+
+  const [formErrors, setFormErrors] = useState({});
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
-
+  
     setIsAdding(true);
     setIsSubmitting(true);
+    const formValues = {
+      productName,
+      productId,
+      MRP,
+      quantity,
+      costPerItem,
+      profit,
+      margin,
+      weightType,
+      selectedCategory,
+      selectedSubCategory,
+      selectedBrand,
+      expiryDate,
+      purchaseRate,
+      weight,
+      packagingDate,
+      editorContent,
+    };
+  
+    try {
+      await validation.validate(formValues, { abortEarly: false });
+      // Clear errors if validation is successful
+      setFormErrors({});
+    } catch (error) {
+      const errors = error.inner.reduce((acc, curr) => {
+        acc[curr.path] = curr.message; // Store error messages keyed by the input name
+        return acc;
+      }, {});
+      setFormErrors(errors);
+      setIsAdding(false);
+      setIsSubmitting(false);
+      return;
+    }
 
     // Check for missing fields
     if (!productName || !productId || !MRP || !quantity || !costPerItem || !profit || !margin || !weightType ||
@@ -176,8 +242,8 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded }) => {
     formData.append('sub_category', selectedSubCategory || '');
     formData.append('brand', selectedBrand || '');
     formData.append('quantity', quantity);
-    formData.append('expiry_date', expiryDate ? expiryDate.toISOString().split('T')[0] : '');
-    formData.append('pkt_date', packagingDate ? packagingDate.toISOString().split('T')[0] : '');
+    formData.append('expiry_date', expiryDate ? formatDate(expiryDate) : '');
+    formData.append('pkt_date', packagingDate ? formatDate(expiryDate) : '');
 
     // Append images to formData
     files.forEach((file) => {
@@ -259,188 +325,209 @@ const Model_Inventory = ({ isOpen, onClose, onProductAdded }) => {
   return (
     <>
       {/* <AddBrand open={open} onClose={handleClose} /> */}
-      <div className={`${isOpen ? "block" : "hidden"} fixed inset-0 bg-white dark:bg-boxdark  flex justify-center items-center z-99999`}>
+      <div className={`${isOpen ? "block" : "hidden"} rounded-lg  inset-0 bg-white dark:bg-boxdark  flex justify-center items-center `}>
         <div className=" p-6 rounded-lg shadow-lg h-full w-full ">
-          <form id="myForm" className="flex gap-4 flex-col md:flex-row" onSubmit={handleSubmit}>
-            <div className="md:w-1/2">
-              <div className="mb-6">
-                {/* <FileUpload onFilesUpdate={handleFilesUpdate} /> */}
-              </div>
+        <form id="myForm" className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3  gap-4 " onSubmit={handleSubmit}>
+          <div className="">
+            <div className="mb-6">
+              <FileUpload onFilesUpdate={handleFilesUpdate} />
             </div>
-            <div className="md:w-1/2">
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium dark:text-white text-gray-700">Product Name</label>
-                  <input
-                    type="text"
-                    name="productName"
-                    id="pName"
-                    placeholder="Enter product name"
-                    className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white ">Product Description</label>
-                  <TextEditor onChange={handleEditorChange} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Product ID</label>
-                  <input
-                    type="text"
-                    name="productId"
-                    id="pID"
-                    placeholder="Enter product ID"
-                    className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                    value={productId}
-                    onChange={(e) => setProductId(e.target.value)}
-                  />
-                </div>
-                <div> 
-                  <Category_Select onSelectCategory={handleCategorySelect} />
-                </div>
-                <div>
-                  <SubCategory_Select selectedCategoryId={selectedCategory} onSelectSubCategory={handleSubCategorySelect} />
-                </div>
-                <div>
-                  <div className="">
-                    <Brand_Select onSelectBrand={setSelectedBrand} />
-                    <FontAwesomeIcon icon={faPlus} className="cursor-pointer text-blue-500" onClick={handleClickOpen} />
-                    <FontAwesomeIcon icon={faPenToSquare} className="cursor-pointer text-yellow-500" />
-                    <FontAwesomeIcon icon={faTrash} className="cursor-pointer text-red-500" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="md:w-1/2 mt-6 md:mt-0 space-y-6">
+          </div>
+          <div className="space-y-6">
+            <div className="space-y-6">
               <div>
-                <SelectProductStatus onSelectStatus={SelectedProductStatus} />
+                <label className="block text-sm font-medium dark:text-white text-gray-700">Product Name</label>
+                <motion.input
+                  type="text"
+                  name="productName"
+                  id="pName"
+                  placeholder="Enter product name"
+                  animate={formErrors.productName ? 'error' : productName ? 'focused' : 'initial'}
+                  variants={inputVariants}
+                  className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                />
+                {formErrors.productName && <span className="error text-sm font-normal text-red-600">{formErrors.productName}</span>}
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">MRP</label>
-                  <div className="flex relative  items-center mt-2  ">
-                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
-                    <input
-                      type="text"
-                      className=" block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                      value={MRP}
-                      onChange={handleMrpChange}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Purchase Price</label>
-                  <div className="flex relative  items-center mt-2 ">
-                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
-                    <input
-                      type="text"
-                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                      value={purchaseRate}
-                      onChange={(e) => setpurchaseRate(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Sell Price</label>
-                  <div className="flex relative  items-center mt-2 ">
-                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
-                    <input
-                      type="text"
-                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                      value={sellingrate}
-                      onChange={(e) => setsellingRate(e.target.value)}
-                    />
-                  </div>
-                </div>
+              <div>
+                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-white ">Product Description</label>
+                <TextEditor onChange={handleEditorChange} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Cost Per Item</label>
-                  <div className="flex relative  items-center mt-2 ">
-                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
-                    <input
-                      type="text"
-                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                      value={costPerItem}
-                      onChange={handleCostChange}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Profit</label>
-                  <div className="flex relative  items-center mt-2 ">
-                    <Icon icon="mynaui:rupee" width={18}  className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
-                    <input
-                      type="text"
-                      className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                      value={profit}
-                      readOnly
-                      onChange={(e) => setProfit(e.target.value)}
-                    />
-                  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Product ID</label>
+                <input
+                  type="text"
+                  name="productId"
+                  id="pID"
+                  placeholder="Enter product ID"
+                  className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  value={productId}
+                  onChange={(e) => setProductId(e.target.value)}
+                />
+                {formErrors.productId && <span className="error">{formErrors.productId}</span>}
+              </div>
+              <div>
+                <Category_Select onSelectCategory={handleCategorySelect} />
+                {formErrors.selectedCategory && <span className="error">{formErrors.selectedCategory}</span>}
+              </div>
+              <div>
+                <SubCategory_Select selectedCategoryId={selectedCategory} onSelectSubCategory={handleSubCategorySelect} />
+                {formErrors.selectedSubCategory && <span className="error">{formErrors.selectedSubCategory}</span>}
+              </div>
+              <div className="relative flex items-end w-full justify-between gap-2">
+                <Brand_Select onSelectBrand={setSelectedBrand} />
+                {formErrors.selectedBrand && <span className="error">{formErrors.selectedBrand}</span>}
+                <div className="flex justify-end gap-1 mb-3">
+                  <Icon width={20} className="cursor-pointer" icon={'gg:add'} onClick={handleClickOpen} />
+                  <Icon width={20} className="cursor-pointer" icon={'fluent-color:edit-20'} />
+                  <Icon width={20} className="cursor-pointer" icon={'marketeq:delete'} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Weight</label>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                    />
-                    <WeightType onWeightChange={(weightType) => setWeightType(weightType)} />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Quantity</label>
+            </div>
+          </div>
+          <div className=" mt-6 md:mt-0 space-y-6">
+            <div>
+              <SelectProductStatus onSelectStatus={SelectedProductStatus} />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">MRP</label>
+                <div className="flex relative  items-center mt-2  ">
+                  <Icon icon="mynaui:rupee" width={18} className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
                   <input
                     type="text"
-                    className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
+                    className=" block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    value={MRP}
+                    onChange={handleMrpChange}
+                    name="MRP"
+
                   />
+
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-white">Tags</label>
-                <TagSelect onChangeTags={(tags) => setTags(tags)} />
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Purchase Price</label>
+                <div className="flex relative  items-center mt-2 ">
+                  <Icon icon="mynaui:rupee" width={18} className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                  <input
+                    type="text"
+                    name="purchaseRate"
+                    className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    value={purchaseRate}
+                    onChange={(e) => setpurchaseRate(e.target.value)}
+                  />
+
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-white">Collections</label>
-                {/* <SelectCollection onChangeCollections={(collections) => setCollections(collections)} /> */}
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Packaging Date</label>
-                  {/* <DatePicker value={packagingDate} onChange={(newValue) => setpackagingDate(newValue)} /> */}
-                  <DatePickerComponent />
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Sell Price</label>
+                <div className="flex relative  items-center mt-2 ">
+                  <Icon icon="mynaui:rupee" width={18} className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                  <input
+                    type="text"
+                    className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    value={sellingrate}
+                    name="sellingrate"
+                    onChange={(e) => setsellingRate(e.target.value)}
+
+                  />
+
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-white">Expiry Date</label>
-                  {/* <DatePicker value={expiryDate} onChange={(newValue) => setExpiryDate(newValue)} /> */}
-                </div>
-              </div>
-              <div className="flex justify-end space-x-4 mt-6">
-                <button
-                  className="bg-gray-500 text-white py-2 px-4 rounded-md dark:text-white"
-                  type="button"
-                  onClick={onClose}
-                >
-                  Discard
-                </button>
-                <button
-                  className="bg-blue-600 text-white py-2 px-4 rounded-md dark:text-white"
-                  type="submit"
-                >
-                  Add Product
-                </button>
               </div>
             </div>
-          </form>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Cost Per Item</label>
+                <div className="flex relative  items-center mt-2 ">
+                  <Icon icon="mynaui:rupee" width={18} className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                  <input
+                    type="text"
+                    className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    value={costPerItem}
+                    name="costPerItem"
+                    onChange={handleCostChange}
+                  />
+
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Profit</label>
+                <div className="flex relative  items-center mt-2 ">
+                  <Icon icon="mynaui:rupee" width={18} className="absolute  left-2 top-1/2 transform -translate-y-1/2" />
+                  <input
+                    type="text"
+                    className="block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-7 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    value={profit}
+                    readOnly
+                    name="profit"
+                    onChange={(e) => setProfit(e.target.value)}
+                  />
+
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Weight</label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                    value={weight}
+                    name="weight"
+                    onChange={(e) => setWeight(e.target.value)}
+                  />
+                  <WeightType onWeightChange={(weightType) => setWeightType(weightType)} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Quantity</label>
+                <input
+                  type="text"
+                  className="mt-2 block w-full font-medium border border-gray-300 rounded-md shadow-sm py-2.5 px-3 focus:ring-0 focus:border-transparent sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  value={quantity}
+                  name="quantity"
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-white">Tags</label>
+              <TagSelect onChangeTags={(tags) => setTags(tags)} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-white">Collections</label>
+              <MultiSelect onChangeSelections={(collections) => setCollections(collections)} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Packaging Date</label>
+                <DatePickerComponent value={packagingDate} onChange={(newValue) => setpackagingDate(newValue)} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-white">Expiry Date</label>
+                <DatePickerComponent value={expiryDate} onChange={(newValue) => setExpiryDate(newValue)} />
+              </div>
+            </div>
+            <div className="flex justify-end space-x-4 mt-6">
+              <button
+                className="font-medium bg-gray-700 text-white py-2 px-4 rounded-md dark:text-white"
+                type="button"
+                onClick={onClose}
+              >
+                Discard
+              </button>
+              <button
+                className="font-medium bg-blue-600 text-white py-2 px-4 rounded-md dark:text-white"
+                type="submit"
+              >
+                Add Product
+              </button>
+            </div>
+          </div>
+        </form>
         </div>
       </div>
 

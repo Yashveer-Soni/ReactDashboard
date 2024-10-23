@@ -3,52 +3,48 @@ import axios from "axios";
 import CustomSelect from './CustomSelect';
 
 const CustomSubCategorySelect = ({ selectedCategoryId, onSelectSubCategory, selectedSubCategoryId }) => {
-  const selected=localStorage.getItem("selectedSubCategory") || null
+  const token = localStorage.getItem('access_token');
   const [subCategories, setSubCategories] = useState([]);
-  const [selectedOption, setSelectedOption] = useState('');
-  const token=localStorage.getItem('access_token');
-
+  const [selectedOption, setSelectedOption] = useState(localStorage.getItem("selectedSubCategory") || '');
 
   useEffect(() => {
     if (selectedCategoryId) {
-      axios.get(`http://127.0.0.1:8000/api/subcategories/?category=${selectedCategoryId}`,{
-        headers: {
-          'Authorization': `Bearer ${token}`
-      }
+      axios.get(`http://127.0.0.1:8000/api/subcategories/?category=${selectedCategoryId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
       })
-        .then(response => {
-          setSubCategories(response.data);
-        })
-        .catch(error => console.error("Error fetching subcategories:", error));
+      .then(response => {
+        setSubCategories(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching subcategories:", error);
+      });
     } else {
-      setSubCategories([]); // Clear subcategories if no category is selected
+      setSubCategories([]);
     }
-  }, [selectedCategoryId]);
+  }, [selectedCategoryId, token]);
 
   useEffect(() => {
-    // Set the selected option when selectedSubCategoryId changes
-    setSelectedOption(selectedSubCategoryId || '');
+    if (selectedSubCategoryId) {
+      setSelectedOption(selectedSubCategoryId);
+    }
   }, [selectedSubCategoryId]);
 
-  const handleChange = (event) => {
-    const selectedValue = event.target.value;
-    setSelectedOption(selectedValue);
-    onSelectSubCategory(selectedValue); // Pass the selected value directly to the parent component
+  const handleChange = (value) => {
+    setSelectedOption(value);
+    onSelectSubCategory(value); 
+    localStorage.setItem("selectedSubCategory", value); 
   };
 
   return (
     <CustomSelect
-    label="Sub Category"
-    options={subCategories}
-    selectedOption={selectedOption}
-    onSelect={(value) => {
-      setSelectedOption(value);
-      setSelectedOption(value); 
-    }}
-    valueKey="id"         
-    labelKey="sub_category_name" 
-    placeholder="Choose a category"
-  />
+      label="Sub Category"
+      options={subCategories}
+      selectedOption={selectedOption}
+      onSelect={handleChange}
+      valueKey="id"         
+      labelKey="sub_category_name" 
+      placeholder="Choose a subcategory"
+    />
   );
 };
 

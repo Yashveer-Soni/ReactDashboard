@@ -104,10 +104,10 @@ const Inventory = () => {
             />
         ))}
         </div>
-            <ModelInventory isOpen={modelopen} onClose={closemodel} />
             <div className="overall">
                 <ShowInventoryProductsList openModel={openModel} />
             </div>
+            <ModelInventory isOpen={modelopen} onClose={closemodel} />
             </FetchProducts>
         </>
     )

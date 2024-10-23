@@ -47,7 +47,7 @@ const Header = () => {
         setIsAuthenticated(false);
         setIsSuperuser(false);
         setLoading(false);
-        navigate('/signin/');
+        // navigate('/signin/');
     };
 
     return (

@@ -8,7 +8,13 @@ body{
     font-style: normal;
     background-color: #F0F1F3;
 }
-
+.datepicker .pointer-events-none{
+    top: 50%;
+    transform: translateY(-50%);
+}
+.datepicker input{
+    padding-left: 38px;
+}
 .page-width{
     width: 100%;
     max-width: 1300px;
@@ -495,10 +501,7 @@ min-width: auto!important;
 .tpborder{
     width: auto;
 }
-.overall{
-    padding-right: 19px;
 
-}
 .overallproducts{
     background-color:white ;
     margin-top: 20px;

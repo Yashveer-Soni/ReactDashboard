@@ -6,12 +6,11 @@ const TextEditor = ({ onChange }) => {
     const [content, setContent] = useState('');
 
     useEffect(() => {
-        // Get the saved content from localStorage and set it as the initial state
         const desc = localStorage.getItem("editorContent");
         if (desc) {
             setContent(desc);
         }
-    }, []); // This effect runs only once when the component mounts
+    }, []);
 
     const modules = {
         toolbar: [

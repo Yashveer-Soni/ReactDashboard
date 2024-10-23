@@ -1,14 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { Datepicker } from "flowbite-react";
 
-const DatePickerComponent = () => {
-    const datepickerRef = useRef(null); // Reference to the datepicker element
-    const [selectedDate, setSelectedDate] = useState('');
-
-
+const DatePickerComponent = ({ value, onChange }) => {
     return (
-        <div className="flex flex-col items-center">
-           <Datepicker />
+        <div className="flex flex-col mt-2 items-center">
+            <Datepicker
+                className="w-full datepicker font-medium"
+                selected={value} // Use the value prop
+                onChange={onChange} // Use the onChange prop
+                todayButton="Today"
+                placeholder="Choose a date"
+                dateFormat="MM/dd/yyyy"
+            />
         </div>
     );
 };
